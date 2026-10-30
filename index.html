@@ -64,34 +64,38 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 #echo{z-index:1;opacity:.07;filter:blur(1.5px);will-change:transform}
 #shadow{z-index:1;opacity:.22;filter:blur(18px);will-change:transform}
 #ink{z-index:2}
-#leaders{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none;overflow:visible}
-#leaders path{fill:none;stroke:var(--ink);stroke-width:1;vector-effect:non-scaling-stroke;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 1s var(--ease)}
-#leaders rect{fill:var(--ink);opacity:0;transition:opacity .3s}
-.hero.done #leaders path{stroke-dashoffset:0}
-.hero.done #leaders rect{opacity:1;transition-delay:.7s}
-.call{position:absolute;z-index:4;width:236px;border:1px solid var(--ink);background:rgba(255,255,255,.78);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);font-size:11.5px;line-height:1.55;opacity:0;transform:translateY(6px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
-.hero.done .call{opacity:1;transform:none}
-.hero.done .call:nth-of-type(2){transition-delay:.15s}
-.hero.done .call:nth-of-type(3){transition-delay:.3s}
-.call header{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:#fff;padding:3px 8px;font-size:10px;letter-spacing:.02em}
-.call header i{width:6px;height:6px;border:1px solid #fff;display:block}
-.call .cb{padding:9px 10px 11px}
-.call .cb strong{display:block;font-family:var(--disp);font-weight:400;font-size:12.5px;line-height:1.35;margin-bottom:5px;letter-spacing:0}
-.call .row2{display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:7px;border-top:1px solid var(--line)}
-.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:7px;vertical-align:1px;animation:ping 2.4s infinite}
-@keyframes ping{0%{box-shadow:0 0 0 0 rgba(225,37,27,.45)}70%,100%{box-shadow:0 0 0 8px rgba(225,37,27,0)}}
-.call a,.call button{text-decoration:underline;text-underline-offset:3px}
-.call a:hover,.call button:hover{color:var(--red)}
+#lily{z-index:0;opacity:0;transition:opacity 1.6s var(--ease)}
+.hero.lilyon #lily{opacity:1}
+#marks{z-index:2}
 .hero-foot{position:absolute;z-index:4;left:var(--gut);right:var(--gut);bottom:26px;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:20px;pointer-events:none}
 .hero-foot > *{pointer-events:auto}
+.hero-foot .who{font-size:12px;margin-top:10px;max-width:34ch;color:#333}
+.hero-foot .right{justify-self:end;text-align:right;font-size:12px}
+.hero-foot .right p{margin-bottom:6px}
+.hero-foot .tag,.hero-foot .who,.hero-foot .right{text-shadow:0 0 10px #fff,0 0 4px #fff}
+.dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--red);margin-right:8px;vertical-align:1px;animation:ping 2.4s infinite}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(225,37,27,.45)}70%,100%{box-shadow:0 0 0 8px rgba(225,37,27,0)}}
 .tag{font-family:var(--disp);font-size:clamp(17px,1.7vw,24px);line-height:1.25;letter-spacing:-.01em}
 .hint{color:var(--mute);font-size:11px;justify-self:center;opacity:0;transition:opacity .6s}
 .hero.done .hint{opacity:1}
 .replay{justify-self:end;font-size:11px;text-decoration:underline;text-underline-offset:3px;opacity:0;transition:opacity .6s}
 .hero.done .replay{opacity:1}
 .replay:hover{color:var(--red)}
-.mob{display:none}
-.hero-foot .tag,.hero-foot .mob{text-shadow:0 0 10px #fff,0 0 4px #fff}
+
+
+/* spine: scroll position as a column of vertebrae */
+.spine{position:fixed;right:18px;top:50%;transform:translateY(-50%);z-index:45;display:flex;flex-direction:column;align-items:center;gap:3px}
+.spine::before{content:"";position:absolute;top:4px;bottom:4px;left:50%;width:1px;background:var(--ink);opacity:0;transition:opacity .5s}
+body.past .spine::before{opacity:.35}
+.spine a{position:relative;display:block;width:30px;height:18px;opacity:0;transform:translateY(8px);transition:opacity .5s var(--ease),transform .5s var(--ease)}
+body.past .spine a{opacity:1;transform:none}
+body.past .spine a:nth-child(2){transition-delay:.05s} body.past .spine a:nth-child(3){transition-delay:.1s} body.past .spine a:nth-child(4){transition-delay:.15s} body.past .spine a:nth-child(5){transition-delay:.2s}
+.spine svg{width:30px;height:18px;overflow:visible}
+.spine use{fill:#fff;stroke:var(--ink);stroke-width:1;transition:fill .3s}
+.spine a:hover use{fill:#d6d6d6}
+.spine a[aria-current="true"] use{fill:var(--red);stroke:var(--red)}
+.spine span{position:absolute;right:38px;top:50%;transform:translate(6px,-50%);font-size:11px;white-space:nowrap;opacity:0;transition:opacity .25s,transform .25s;pointer-events:none;background:rgba(255,255,255,.9);padding:1px 4px}
+.spine a:hover span,.spine a:focus-visible span{opacity:1;transform:translate(0,-50%)}
 
 /* ---------- sections ---------- */
 section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
@@ -221,10 +225,11 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   .bar{grid-template-columns:auto 1fr}
   .nav{justify-self:end;gap:18px}
   .clocks{display:none}
-  .call,#leaders,.hint,.replay{display:none}
-  .hero-foot{grid-template-columns:1fr;gap:12px;bottom:22px}
-  .mob{display:block;font-size:12px}
-  .mob .row2{display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+  .hint{display:none}
+  .hero-foot{grid-template-columns:1fr;gap:14px;bottom:22px}
+  .hero-foot .right{justify-self:start;text-align:left;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
+  .hero-foot .right p{margin:0}
+  .spine{display:none}
   .feat .wrap,.feat:nth-child(even) .wrap{grid-column:1/-1;grid-row:1}
   .feat .txt,.feat:nth-child(even) .txt{grid-column:1/-1;grid-row:2;margin-top:20px}
   .row{grid-template-columns:minmax(0,1fr) auto;row-gap:2px}
@@ -263,36 +268,29 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
     <span>SZ <b data-tz="Asia/Shanghai">--:--</b></span>
   </div>
 </header>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><symbol id="vert" viewBox="0 0 40 24"><path d="M13 8.5C8.5 6.2 4.5 6.8 1 9.6c3.4 2.4 7.6 3.2 12 2.6zM27 8.5c4.5-2.3 8.5-1.7 12 1.1-3.4 2.4-7.6 3.2-12 2.6zM17.2 16.5 20 23l2.8-6.5zM14.5 3h11a4 4 0 0 1 4 4v6a4 4 0 0 1-4 4h-11a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z"/></symbol></defs></svg>
+<nav class="spine" aria-label="Scroll position">
+  <a href="#work"><svg><use href="#vert"/></svg><span>Work</span></a>
+  <a href="#lab"><svg><use href="#vert"/></svg><span>Lab</span></a>
+  <a href="#process"><svg><use href="#vert"/></svg><span>How I work</span></a>
+  <a href="#about"><svg><use href="#vert"/></svg><span>About</span></a>
+  <a href="#contact"><svg><use href="#vert"/></svg><span>Contact</span></a>
+</nav>
 
 <main id="top">
   <section class="hero" id="hero" aria-label="Caroline Chen, designer">
     <h1 class="skip" style="left:-999px">Caroline Chen, designer</h1>
     <canvas id="bg" aria-hidden="true"></canvas>
+    <canvas id="lily" aria-hidden="true"></canvas>
     <canvas id="echo" aria-hidden="true"></canvas>
     <canvas id="shadow" aria-hidden="true"></canvas>
     <canvas id="ink" aria-hidden="true"></canvas>
-    <svg id="leaders" aria-hidden="true"></svg>
-
-    <div class="call" id="callA" data-anchor="0,tl">
-      <header><span>Profile</span><i></i></header>
-      <div class="cb"><strong>Caroline Chen</strong>Designer across UX, brand, print and motion.</div>
-    </div>
-    <div class="call" id="callB" data-anchor="1,tr">
-      <header><span>Background</span><i></i></header>
-      <div class="cb"><strong>Design + economics</strong>UC Davis. Fieldwork first: I watch what people actually do, then build for it.</div>
-    </div>
-    <div class="call" id="callC" data-anchor="2,br">
-      <header><span>Status</span><i></i></header>
-      <div class="cb"><span class="dot" aria-hidden="true"></span>Open to full-time roles
-        <div class="row2"><a href="#work">See the work</a><a href="#contact">Get in touch</a></div></div>
-    </div>
+    <canvas id="marks" aria-hidden="true"></canvas>
 
     <div class="hero-foot">
-      <p class="tag">Watch people.<br>Then build.</p>
+      <div><p class="tag">Watch people.<br>Then build.</p><p class="who">Caroline Chen, a designer across UX, brand, print and motion, trained in design and economics.</p></div>
       <span class="hint" id="hint">Move across the name</span>
-      <button class="replay" type="button" id="replay">Write it again</button>
-      <div class="mob">I’m Caroline Chen, a designer across UX, brand, print and motion, trained in design and economics.
-        <div class="row2"><span><span class="dot" aria-hidden="true"></span>Open to full-time roles</span><a href="#work">See the work</a></div></div>
+      <div class="right"><p><span class="dot" aria-hidden="true"></span>Open to full-time roles</p><button class="replay" type="button" id="replay">Write it again</button></div>
     </div>
   </section>
 
@@ -473,6 +471,56 @@ const fine=matchMedia("(hover: hover) and (pointer: fine)").matches;
 const pad=n=>String(Math.max(0,Math.round(n))).padStart(4,"0");
 function rng(seed){ let s=seed>>>0||1; return ()=>((s=Math.imul(s^s>>>15,1|s)+0x6D2B79F5|0, s=s+Math.imul(s^s>>>7,61|s)^s, (s^s>>>14)>>>0)/4294967296); }
 
+/* ===================== SHARED ART: chrome, vertebrae, calla lily ===================== */
+function chrome(g,x0,y0,x1,y1){ const c=g.createLinearGradient(x0,y0,x1,y1);
+  [[0,"#fbfbfb"],[.16,"#cfcfcf"],[.3,"#6a6a6a"],[.4,"#161616"],[.47,"#7d7d7d"],[.56,"#f4f4f4"],[.7,"#b4b4b4"],[.84,"#4a4a4a"],[1,"#d9d9d9"]].forEach(([o,k])=>c.addColorStop(o,k)); return c; }
+function vertebra(g,x,y,ang,s,alpha){
+  g.save(); g.translate(x,y); g.rotate(ang); g.globalAlpha=alpha;
+  g.lineWidth=Math.max(.6,s*.02); g.strokeStyle="rgba(0,0,0,.5)"; g.lineJoin="round";
+  const wing=k=>{ g.beginPath(); g.moveTo(k*.34*s,-.12*s); g.bezierCurveTo(k*.55*s,-.2*s,k*.74*s,-.12*s,k*.8*s,.02*s); g.bezierCurveTo(k*.72*s,.12*s,k*.52*s,.1*s,k*.34*s,.1*s); g.closePath(); g.fillStyle=chrome(g,0,-.2*s,0,.15*s); g.fill(); g.stroke(); };
+  wing(-1); wing(1);
+  g.beginPath(); g.moveTo(-.11*s,.2*s); g.quadraticCurveTo(0,.62*s,.11*s,.2*s); g.closePath(); g.fillStyle=chrome(g,-.12*s,0,.12*s,0); g.fill(); g.stroke();
+  const w=.7*s,h=.62*s,r=.24*s; g.beginPath(); g.moveTo(-w/2+r,-h/2); g.arcTo(w/2,-h/2,w/2,h/2,r); g.arcTo(w/2,h/2,-w/2,h/2,r); g.arcTo(-w/2,h/2,-w/2,-h/2,r); g.arcTo(-w/2,-h/2,w/2,-h/2,r); g.closePath();
+  g.fillStyle=chrome(g,-w/2,-h/2,w/2,h/2); g.fill(); g.stroke();
+  g.fillStyle="rgba(255,255,255,.9)"; g.beginPath(); g.ellipse(-.12*s,-.16*s,.12*s,.035*s,-.2,0,7); g.fill();
+  g.restore();
+}
+/* calla lily: chrome spathe, red spadix. base at (0,0); flower rises ~1 unit, opening faces the viewer at 3/4 */
+function callaLily(g,bx,by,S,ang,open){
+  g.save(); g.translate(bx,by); g.rotate(ang); g.scale(S,S);
+  const lw=1/S, L=[-.3,-.6], Rr=[.27,-.66], tip=[.02+.05*(1-open),-1.08];
+  // inner (back) surface: the open throat you look into
+  const inner=new Path2D(); inner.moveTo(L[0],L[1]);
+  inner.bezierCurveTo(-.34,-.82,-.14,-.98,tip[0],tip[1]);
+  inner.bezierCurveTo(.1,-.96,.3,-.84,Rr[0],Rr[1]);
+  inner.bezierCurveTo(.16,-.5,-.12,-.47,L[0],L[1]); inner.closePath();
+  const ig=g.createLinearGradient(-.3,-1.05,.25,-.5); [[0,"#ffffff"],[.35,"#e9e9e9"],[.6,"#9e9e9e"],[.8,"#2a2a2a"],[1,"#5c5c5c"]].forEach(([o,k])=>ig.addColorStop(o,k));
+  g.fillStyle=ig; g.fill(inner);
+  g.save(); g.clip(inner); g.lineWidth=lw*.7;
+  for(let i=0;i<=26;i++){ const t=i/26, a=-Math.PI*.95+t*Math.PI*.9, rx=.36, ry=.5, ex=-.01+Math.cos(a)*rx, ey=-.56+Math.sin(a)*ry;
+    g.strokeStyle=`rgba(0,0,0,${.06+.09*Math.sin(t*Math.PI)})`; g.beginPath(); g.moveTo(-.01,-.56); g.quadraticCurveTo((-.01+ex)/2+.03,(-.56+ey)/2,ex,ey); g.stroke(); }
+  const deep=g.createRadialGradient(-.01,-.57,0,-.01,-.57,.2); deep.addColorStop(0,"rgba(0,0,0,.95)"); deep.addColorStop(.5,"rgba(0,0,0,.45)"); deep.addColorStop(1,"rgba(0,0,0,0)");
+  g.fillStyle=deep; g.fillRect(-.3,-.8,.6,.4);
+  g.restore();
+  // spadix rising out of the throat
+  const rg=g.createLinearGradient(-.03,0,.04,0); rg.addColorStop(0,"#7a0b06"); rg.addColorStop(.45,"#ff4b3e"); rg.addColorStop(1,"#9f120a");
+  g.strokeStyle=rg; g.lineCap="round"; g.lineWidth=.038; g.beginPath(); g.moveTo(0,-.56); g.quadraticCurveTo(-.015,-.66,.012,-.79); g.stroke();
+  g.fillStyle="rgba(255,255,255,.75)"; g.beginPath(); g.ellipse(-.004,-.72,.005,.03,.12,0,7); g.fill();
+  // outer (front) surface: the funnel wrapping round, its lip rolled back
+  const outer=new Path2D(); outer.moveTo(-.035,0);
+  outer.bezierCurveTo(-.06,-.2,-.2,-.42,L[0],L[1]);
+  outer.bezierCurveTo(-.2,-.5,.12,-.5,Rr[0],Rr[1]);
+  outer.bezierCurveTo(.2,-.44,.08,-.22,.035,0); outer.closePath();
+  g.fillStyle=chrome(g,-.3,-.3,.3,-.3); g.fill(outer);
+  g.save(); g.clip(outer); g.lineWidth=lw*.7;
+  for(let i=0;i<=14;i++){ const t=i/14, ex=L[0]+(Rr[0]-L[0])*t, ey=-.52-Math.sin(t*Math.PI)*.0+(Rr[1]-L[1])*t; g.strokeStyle="rgba(0,0,0,.12)"; g.beginPath(); g.moveTo(0,0); g.quadraticCurveTo(ex*.4,ey*.6,ex,ey); g.stroke(); }
+  g.restore();
+  // rolled lip highlight
+  g.strokeStyle="rgba(255,255,255,.95)"; g.lineWidth=.012; g.lineCap="round"; g.beginPath(); g.moveTo(L[0]+.02,L[1]+.005); g.bezierCurveTo(-.2,-.5,.12,-.5,Rr[0]-.02,Rr[1]+.01); g.stroke();
+  g.lineWidth=lw; g.strokeStyle="rgba(0,0,0,.55)"; g.stroke(inner); g.stroke(outer);
+  g.restore();
+}
+
 /* ===================== GRAIN ===================== */
 (function(){
   const c=document.createElement("canvas"); c.width=c.height=180; const g=c.getContext("2d"); const d=g.createImageData(180,180);
@@ -493,17 +541,9 @@ function texify(el){
       for(let i=0;i<a.length;i+=4){ let v=.3*a[i]+.59*a[i+1]+.11*a[i+2]; v=(v-128)*1.12+132; a[i]=a[i+1]=a[i+2]=v<0?0:v>255?255:v; }
       g.putImageData(d,0,0);
     }catch(e){ g.globalCompositeOperation="saturation"; g.fillStyle="#000"; g.fillRect(0,0,w,h); g.globalCompositeOperation="source-over"; }
-    // pixel smear: stretch single rows into long vertical streaks, like data bleeding out of the image
-    const r=rng(w*7+h); const n=Math.round(w/26);
-    for(let i=0;i<n;i++){
-      const bw=Math.max(1,Math.round(1+Math.pow(r(),3)*w*.05)), x=Math.floor(r()*(w-bw));
-      const y0=Math.floor(h*(.35+r()*.6)), down=r()<.8;
-      g.globalAlpha=.55+r()*.45;
-      if(down) g.drawImage(cv,x,y0,bw,1,x,y0,bw,h-y0); else g.drawImage(cv,x,y0,bw,1,x,0,bw,y0);
-    }
     // a few displaced horizontal slices
     g.globalAlpha=1;
-    for(let i=0;i<3;i++){ const sh=Math.round(2+r()*h*.02), y=Math.floor(r()*(h-sh)), dx=Math.round((r()-.5)*w*.06); g.drawImage(cv,0,y,w,sh,dx,y,w,sh); }
+    const r=rng(w*7+h); for(let i=0;i<3;i++){ const sh=Math.round(2+r()*h*.02), y=Math.floor(r()*(h-sh)), dx=Math.round((r()-.5)*w*.06); g.drawImage(cv,0,y,w,sh,dx,y,w,sh); }
     el.insertBefore(cv,img.nextSibling);
   };
   if(img.complete&&img.naturalWidth) go(); else img.addEventListener("load",go,{once:true});
@@ -652,14 +692,8 @@ tick(); setInterval(tick,15000);
         g.stroke();
       }
     },
-    build(g,S,r){ // cellular membrane: a mass with holes eaten out
-      const cx=S/2,cy=S/2; g.fillStyle="#000"; g.beginPath();
-      for(let i=0;i<=120;i++){ const a=i/120*Math.PI*2, rr=S*(.4+.04*Math.sin(a*3+1)+.025*Math.sin(a*7)); i?g.lineTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr):g.moveTo(cx+Math.cos(a)*rr,cy+Math.sin(a)*rr); }
-      g.fill(); g.globalCompositeOperation="destination-out";
-      const pts=[]; for(let i=0;i<9000 && pts.length<420;i++){ const x=r()*S,y=r()*S, rad=S*(.008+Math.pow(r(),2.5)*.06); if(pts.every(p=>Math.hypot(p[0]-x,p[1]-y)>p[2]+rad+S*.0045)) pts.push([x,y,rad]); }
-      pts.forEach(([x,y,rad])=>{ g.beginPath(); for(let i=0;i<=40;i++){ const a=i/40*Math.PI*2, rr=rad*(1+.12*Math.sin(a*3+x)); i?g.lineTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr):g.moveTo(x+Math.cos(a)*rr,y+Math.sin(a)*rr); } g.fill(); });
-      g.globalCompositeOperation="source-over";
-      g.fillStyle="rgba(255,255,255,.18)"; for(let i=0;i<1600;i++){ g.fillRect(r()*S,r()*S,1,1); }
+    build(g,S,r){ // a spine assembling itself: structure that still bends
+      const n=10; for(let i=n-1;i>=0;i--){ const t=i/(n-1), y=S*(.1+t*.8), x=S*.5+Math.sin(t*2.6+.5)*S*.06, a=Math.cos(t*2.6+.5)*.18; vertebra(g,x,y,a,S*(.105+t*.04),1); }
     }
   };
   const io=new IntersectionObserver(es=>es.forEach(en=>{ if(!en.isIntersecting) return; io.unobserve(en.target);
@@ -671,191 +705,154 @@ tick(); setInterval(tick,15000);
 
 /* ===================== HERO: THE NAME, WRITTEN ===================== */
 (function(){
-  const hero=$("#hero"), bg=$("#bg"), echo=$("#echo"), shadow=$("#shadow"), cv=$("#ink"), svg=$("#leaders");
-  const bx=bg.getContext("2d"), ex=echo.getContext("2d"), sx=shadow.getContext("2d"), ctx=cv.getContext("2d");
-  const glyph=document.createElement("canvas"), gx=glyph.getContext("2d",{willReadFrequently:true});
-  const drips=document.createElement("canvas"), dx=drips.getContext("2d");
+  const hero=$("#hero"), bg=$("#bg"), lilyC=$("#lily"), echo=$("#echo"), shadow=$("#shadow"), cv=$("#ink"), mk=$("#marks");
+  const bx=bg.getContext("2d"), lx=lilyC.getContext("2d"), ex=echo.getContext("2d"), sx=shadow.getContext("2d"), ctx=cv.getContext("2d"), mx=mk.getContext("2d");
+  const glyph=document.createElement("canvas"), gx=glyph.getContext("2d");
   const DATA=window.NAME_STROKES||[];
   const CH=DATA.map(c=>({paths:c.s.map(s=>new Path2D(s)), med:c.m, len:c.m.map(m=>m.reduce((a,p,i)=>i?a+Math.hypot(p[0]-m[i-1][0],p[1]-m[i-1][1]):0,0))}));
-  // writing schedule
-  const SEQ=[]; { let t=250; CH.forEach((c,ci)=>{ c.len.forEach((L,si)=>{ const d=70+L*.19; SEQ.push({ci,si,t0:t,d}); t+=d*.86; }); t+=170; }); }
+  // schedule: each stroke, then the pen travels through the air to the next one
+  const SEQ=[]; { let t=300; CH.forEach((c,ci)=>{ c.len.forEach((L,si)=>{ const d=60+L*.16; SEQ.push({ci,si,t0:t,d}); t+=d+(si<c.len.length-1?70:150); }); }); }
   const WRITE_END=SEQ.length?SEQ[SEQ.length-1].t0+SEQ[SEQ.length-1].d:0;
 
   let W=0,H=0,DPR=1,G=300,vertical=false,boxes=[],bbox={x:0,y:0,w:0,h:0};
-  let start=performance.now(), drawn=SEQ.map(()=>0), done=false, dripList=[], dripStart=0;
-  let px=-1,py=-1,inside=false,pmx=0,pmy=0,tmx=0,tmy=0, raf=0, visible=true, pulse=null, lastPulse=0;
+  let start=performance.now(), drawn=SEQ.map(()=>0), air=SEQ.map(()=>0), done=false, lilyT=-1;
+  let px=-1,py=-1,inside=false,pmx=0,pmy=0,tmx=0,tmy=0,raf=0,visible=true,pulse=null,lastPulse=0;
   const noise=document.createElement("canvas"); noise.width=noise.height=128; { const n=noise.getContext("2d"), d=n.createImageData(128,128); for(let i=0;i<d.data.length;i+=4){ d.data[i]=d.data[i+1]=d.data[i+2]=255; d.data[i+3]=Math.random()<.5?Math.random()*255:0; } n.putImageData(d,0,0); }
-  // fog + dust
   const R0=rng(42); const fog=[...Array(5)].map(()=>({x:R0(),y:R0(),r:.25+R0()*.3,s:.3+R0()*.6,ph:R0()*6}));
-  const dust=[...Array(140)].map(()=>({x:R0(),y:R0(),z:R0(),s:R0()}));
+  const dust=[...Array(120)].map(()=>({x:R0(),y:R0(),z:R0()}));
 
   function layout(){
     DPR=Math.min(2,devicePixelRatio||1); W=hero.clientWidth; H=hero.clientHeight;
-    for(const c of [echo,shadow,cv,glyph,drips]){ c.width=Math.round(W*DPR); c.height=Math.round(H*DPR); }
+    for(const c of [echo,shadow,cv,glyph,mk,lilyC]){ c.width=Math.round(W*DPR); c.height=Math.round(H*DPR); }
     bg.width=Math.round(W); bg.height=Math.round(H);
-    vertical = W/H < .85;
-    if(vertical){ G=Math.min(W*.46,(H-340)/2.6); const top=Math.max(80,(H-310-G*2.6)/2+70); boxes=[0,1,2].map(i=>({x:(W-G)/2, y:top+i*G*.86})); }
-    else { G=Math.min(W*.235,H*.42); const tw=G*2.82; const left=(W-tw)/2, top=H*.48-G*.5; boxes=[0,1,2].map(i=>({x:left+i*G*.91, y:top})); }
-    bbox={x:boxes[0].x, y:boxes[0].y, w:vertical?G:G*2.82, h:vertical?G*2.72:G};
-    svg.setAttribute("viewBox",`0 0 ${W} ${H}`);
-    redrawGlyph(); placeCallouts();
+    vertical=W/H<.85;
+    if(vertical){ G=Math.min(W*.46,(H-340)/2.6); const top=Math.max(80,(H-310-G*2.6)/2+70); boxes=[0,1,2].map(i=>({x:(W-G)/2-W*.06,y:top+i*G*.86})); }
+    else { G=Math.min(W*.235,H*.42); const tw=G*2.82, left=(W-tw)/2-W*.06, top=H*.47-G*.5; boxes=[0,1,2].map(i=>({x:left+i*G*.91,y:top})); }
+    bbox={x:boxes[0].x,y:boxes[0].y,w:vertical?G:G*2.82,h:vertical?G*2.72:G};
+    redrawGlyph(); redrawMarks();
   }
   const sc=()=>G/1024;
-  function charT(g,ci){ const b=boxes[ci], s=sc(); g.setTransform(s*DPR,0,0,-s*DPR,b.x*DPR,(b.y+900*s)*DPR); }
-  function toScreen(ci,p){ const b=boxes[ci], s=sc(); return [b.x+p[0]*s, b.y+(900-p[1])*s]; }
-  function pointAt(m,L,frac){ let need=L*frac; for(let i=1;i<m.length;i++){ const seg=Math.hypot(m[i][0]-m[i-1][0],m[i][1]-m[i-1][1]); if(need<=seg){ const k=seg?need/seg:0; return [m[i-1][0]+(m[i][0]-m[i-1][0])*k, m[i-1][1]+(m[i][1]-m[i-1][1])*k]; } need-=seg; } return m[m.length-1]; }
-  function paintStroke(k,frac){
+  function charT(g,ci){ const b=boxes[ci],s=sc(); g.setTransform(s*DPR,0,0,-s*DPR,b.x*DPR,(b.y+900*s)*DPR); }
+  function toScreen(ci,p){ const b=boxes[ci],s=sc(); return [b.x+p[0]*s,b.y+(900-p[1])*s]; }
+  function pointAt(m,L,f){ let need=L*f; for(let i=1;i<m.length;i++){ const seg=Math.hypot(m[i][0]-m[i-1][0],m[i][1]-m[i-1][1]); if(need<=seg){ const k=seg?need/seg:0; return [m[i-1][0]+(m[i][0]-m[i-1][0])*k,m[i-1][1]+(m[i][1]-m[i-1][1])*k]; } need-=seg; } return m[m.length-1]; }
+  const ease=f=>f<.5?2*f*f:1-Math.pow(-2*f+2,2)/2;
+
+  function paintStroke(k,f){
     const {ci,si}=SEQ[k], c=CH[ci], m=c.med[si], L=c.len[si];
-    gx.save(); charT(gx,ci); gx.clip(c.paths[si]);
-    gx.lineCap="round"; gx.lineJoin="round"; gx.lineWidth=190; gx.strokeStyle="#000";
-    gx.beginPath(); gx.moveTo(m[0][0],m[0][1]);
-    let need=L*frac;
-    for(let i=1;i<m.length;i++){ const seg=Math.hypot(m[i][0]-m[i-1][0],m[i][1]-m[i-1][1]); if(need>=seg){ gx.lineTo(m[i][0],m[i][1]); need-=seg; } else { const q=pointAt(m,L,frac); gx.lineTo(q[0],q[1]); break; } }
-    if(frac<.02){ gx.lineTo(m[0][0]+.1,m[0][1]); }
+    gx.save(); charT(gx,ci); gx.clip(c.paths[si]); gx.lineCap="round"; gx.lineJoin="round"; gx.lineWidth=190; gx.strokeStyle="#000";
+    gx.beginPath(); gx.moveTo(m[0][0],m[0][1]); let need=L*f;
+    for(let i=1;i<m.length;i++){ const seg=Math.hypot(m[i][0]-m[i-1][0],m[i][1]-m[i-1][1]); if(need>=seg){ gx.lineTo(m[i][0],m[i][1]); need-=seg; } else { const q=pointAt(m,L,f); gx.lineTo(q[0],q[1]); break; } }
+    if(f<.02) gx.lineTo(m[0][0]+.1,m[0][1]);
     gx.stroke(); gx.restore();
   }
+  // the pen's path through the air between strokes: a lifted arc from one stroke's end to the next stroke's start
+  function airPath(k){
+    const a=SEQ[k-1], b=SEQ[k]; if(!a) return null;
+    const ma=CH[a.ci].med[a.si], mb=CH[b.ci].med[b.si];
+    const p0=toScreen(a.ci,ma[ma.length-1]), p1=toScreen(b.ci,mb[0]);
+    const dx=p1[0]-p0[0], dy=p1[1]-p0[1], d=Math.hypot(dx,dy)||1;
+    const lift=Math.min(G*.22,d*.32), c=[(p0[0]+p1[0])/2+dy/d*lift*.35, (p0[1]+p1[1])/2-lift];
+    return {p0,c,p1};
+  }
+  function drawAir(k,f){
+    const A=airPath(k); if(!A) return null;
+    const {p0,c,p1}=A, q=(t)=>[(1-t)*(1-t)*p0[0]+2*(1-t)*t*c[0]+t*t*p1[0],(1-t)*(1-t)*p0[1]+2*(1-t)*t*c[1]+t*t*p1[1]];
+    mx.save(); mx.setTransform(DPR,0,0,DPR,0,0); mx.strokeStyle="rgba(0,0,0,.24)"; mx.lineWidth=.8; mx.setLineDash([]);
+    mx.beginPath(); mx.moveTo(p0[0],p0[1]); const n=24; for(let i=1;i<=Math.ceil(n*f);i++) { const p=q(Math.min(f,i/n)); mx.lineTo(p[0],p[1]); } mx.stroke();
+    // tiny tick where the pen touches down
+    if(f>=1){ mx.fillStyle="rgba(0,0,0,.35)"; mx.fillRect(p1[0]-1,p1[1]-1,2,2); }
+    mx.restore(); return q(f);
+  }
   function texture(){ gx.save(); gx.setTransform(1,0,0,1,0,0); gx.globalCompositeOperation="source-atop"; gx.globalAlpha=.16; gx.fillStyle=gx.createPattern(noise,"repeat"); gx.fillRect(0,0,glyph.width,glyph.height); gx.restore(); }
-  function redrawGlyph(){
-    gx.setTransform(1,0,0,1,0,0); gx.clearRect(0,0,glyph.width,glyph.height);
-    SEQ.forEach((s,k)=>{ if(drawn[k]>0) paintStroke(k,drawn[k]); });
-    if(done){ texture(); buildDrips(); }
-    syncLayers();
-  }
-  function syncLayers(){
-    for(const [c,x] of [[shadow,sx],[echo,ex]]){ x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,c.width,c.height); x.drawImage(glyph,0,0); }
-  }
-  function buildDrips(){
-    // sample the written name; stretch its lowest (and some highest) ink downward/upward into streaks
-    const step=Math.max(2,Math.round(G/110)), r=rng(7), list=[];
-    const img=gx.getImageData(0,0,glyph.width,glyph.height).data, gw=glyph.width;
-    const alphaAt=(x,y)=>img[((Math.round(y*DPR))*gw+Math.round(x*DPR))*4+3];
-    for(let x=bbox.x; x<bbox.x+bbox.w; x+=step){
-      let lo=-1,hi=-1; for(let y=bbox.y-G*.15; y<bbox.y+bbox.h+G*.1; y+=2){ if(alphaAt(x,y)>200){ if(hi<0) hi=y; lo=y; } }
-      if(lo<0) continue;
-      if(r()<.42){ const long=r()<.12; list.push({x, y:lo-3, w:step*(1+Math.floor(r()*(long?4:2))), L:(long? .5+r()*.6 : .05+Math.pow(r(),2)*.35)*G, a:.25+r()*.6, up:false}); }
-      if(r()<.12) list.push({x, y:hi+3, w:step, L:(.04+r()*.18)*G, a:.15+r()*.4, up:true});
-    }
-    dripList=list; dripStart=performance.now(); renderDrips(reduce?1:0);
-  }
-  function renderDrips(k){
-    dx.setTransform(1,0,0,1,0,0); dx.clearRect(0,0,drips.width,drips.height);
-    const e=1-Math.pow(1-k,3);
-    for(const d of dripList){
-      const L=d.L*e; if(L<1) continue; const segs=6;
-      for(let s=0;s<segs;s++){
-        dx.globalAlpha=d.a*(1-s/segs)*.9;
-        const y0=d.up? d.y-L*(s+1)/segs : d.y+L*s/segs;
-        dx.drawImage(glyph,d.x*DPR,(d.up?d.y:d.y-1)*DPR,d.w*DPR,1*DPR, d.x*DPR,y0*DPR,d.w*DPR,(L/segs+.5)*DPR);
-      }
-    }
-    dx.globalAlpha=1;
-  }
+  function redrawGlyph(){ gx.setTransform(1,0,0,1,0,0); gx.clearRect(0,0,glyph.width,glyph.height); SEQ.forEach((s,k)=>{ if(drawn[k]>0) paintStroke(k,drawn[k]); }); if(done) texture(); syncLayers(); }
+  function redrawMarks(){ mx.setTransform(1,0,0,1,0,0); mx.clearRect(0,0,mk.width,mk.height); SEQ.forEach((s,k)=>{ if(air[k]>0) drawAir(k,air[k]); }); }
+  function syncLayers(){ for(const [c,x] of [[shadow,sx],[echo,ex]]){ x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,c.width,c.height); x.drawImage(glyph,0,0); } }
 
-  function placeCallouts(){
-    if(vertical||W<900){ svg.innerHTML=""; return; }
-    const calls=[...hero.querySelectorAll(".call")];
-    const pos={callA:[Math.max(16,bbox.x-60), Math.max(86,bbox.y-170)], callB:[Math.min(W-252,bbox.x+bbox.w-60), Math.max(86,bbox.y-150)], callC:[Math.min(W-252,bbox.x+bbox.w-40), Math.min(H-200,bbox.y+bbox.h+40)]};
-    let html="";
-    calls.forEach(el=>{
-      const [cs,mode]=el.dataset.anchor.split(","), ci=+cs;
-      const score={tl:p=>-p[0]+p[1], tr:p=>p[0]+p[1], br:p=>p[0]-p[1]}[mode];
-      let best=null; CH[ci].med.forEach(m=>[m[0],m[m.length-1]].forEach(p=>{ if(!best||score(p)>score(best)) best=p; }));
-      const a=toScreen(ci,best);
-      const [x,y]=pos[el.id]; el.style.left=x+"px"; el.style.top=y+"px";
-      const bw=236, bh=el.offsetHeight||90;
-      const bxp = a[0] < x ? x : (a[0] > x+bw ? x+bw : x+bw/2);
-      const byp = a[1] < y ? y : y+bh;
-      const ex=bxp, ey=byp + (a[1]<y?-0:0);
-      const mid=[ex, ey + (a[1]>ey? 24 : -24)];
-      const d=`M${ex},${ey} L${mid[0]},${mid[1]} L${a[0]},${a[1]}`;
-      const len=Math.hypot(mid[0]-ex,mid[1]-ey)+Math.hypot(a[0]-mid[0],a[1]-mid[1]);
-      html+=`<path d="${d}" style="--len:${len}"/><rect x="${a[0]-3}" y="${a[1]-3}" width="6" height="6"/>`;
-    });
-    svg.innerHTML=html;
+  function drawLily(now){
+    lx.setTransform(1,0,0,1,0,0); lx.clearRect(0,0,lilyC.width,lilyC.height); if(lilyT<0) return;
+    lx.setTransform(DPR,0,0,DPR,0,0);
+    const k=reduce?1:Math.min(1,(now-lilyT)/2200), sway=reduce?0:Math.sin(now*.0006)*.035+pmx*.04;
+    const base=vertical?[W*.88+pmx*-10,H*.36]:[W*.87+pmx*-18,H*.5+pmy*-8], S=vertical?H*.17:H*.36;
+    const end=vertical?[W*.98,H*.98]:[W*.74,H*.96], ctl=[base[0]+S*.14,base[1]+(end[1]-base[1])*.6];
+    // stem as a spine: vertebrae packed along the curve, assembling from the ground up, fading toward the floor
+    const B=u=>[(1-u)*(1-u)*base[0]+2*(1-u)*u*ctl[0]+u*u*end[0],(1-u)*(1-u)*base[1]+2*(1-u)*u*ctl[1]+u*u*end[1]];
+    const pts=[]; { let u=.035, last=B(0); while(u<1){ const p=B(u), sz=S*(.1+u*.05); if(Math.hypot(p[0]-last[0],p[1]-last[1])>=sz*.62){ pts.push([u,p,sz]); last=p; } u+=.002; } }
+    for(let i=pts.length-1;i>=0;i--){ const [u,p,sz]=pts[i], appear=Math.max(0,Math.min(1,(k*1.5-(1-u))*3)); if(!appear) continue;
+      const tx=2*(1-u)*(ctl[0]-base[0])+2*u*(end[0]-ctl[0]), ty=2*(1-u)*(ctl[1]-base[1])+2*u*(end[1]-ctl[1]);
+      const fade=u>.6?Math.max(0,1-(u-.6)/.4):1;
+      vertebra(lx,p[0],p[1],Math.atan2(ty,tx)-Math.PI/2,sz*(.6+.4*appear),appear*.92*fade); }
+    const bloom=Math.max(0,Math.min(1,(k-.45)/.55)); if(bloom>0){ lx.globalAlpha=bloom; callaLily(lx,base[0],base[1],S*(.85+.15*ease(bloom)),-.18+sway,.96+.04*bloom); lx.globalAlpha=1; }
   }
 
   function frame(now){
-    const t=now-start;
-    // write
+    const t=now-start; let tip=null;
     if(!done){
-      let tip=null,ci=-1;
-      SEQ.forEach((s,k)=>{ const f=Math.max(0,Math.min(1,(t-s.t0)/s.d)); if(f>drawn[k]){ const e=f<.5?2*f*f:1-Math.pow(-2*f+2,2)/2; paintStroke(k,e); drawn[k]=f; if(f<1){ const c=CH[s.ci]; tip=toScreen(s.ci,pointAt(c.med[s.si],c.len[s.si],e)); ci=k; } } });
+      SEQ.forEach((s,k)=>{
+        const f=Math.max(0,Math.min(1,(t-s.t0)/s.d));
+        if(k>0){ const prev=SEQ[k-1], a0=prev.t0+prev.d, af=Math.max(0,Math.min(1,(t-a0)/Math.max(1,s.t0-a0))); if(af>air[k]){ air[k]=af; const p=drawAir(k,ease(af)); if(af<1) tip=p; } }
+        if(f>drawn[k]){ const e=ease(f); paintStroke(k,e); drawn[k]=f; if(f<1){ const c=CH[s.ci]; tip=toScreen(s.ci,pointAt(c.med[s.si],c.len[s.si],e)); } }
+      });
       syncLayers();
-      if(t>=WRITE_END){ done=true; drawn=SEQ.map(()=>1); redrawGlyph(); hero.classList.add("done"); }
-      render(now,tip,ci);
-    } else {
-      const k=Math.min(1,(now-dripStart)/1800); if(k<1) renderDrips(k);
-      render(now,null,-1);
+      if(t>=WRITE_END){ done=true; drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); redrawGlyph(); hero.classList.add("done","lilyon"); lilyT=now; }
+      else if(t>WRITE_END*.55 && lilyT<0){ lilyT=now; hero.classList.add("lilyon"); }
     }
+    render(now,tip);
   }
 
-  function render(now,tip,k){
-    // parallax
+  function render(now,tip){
     pmx+=(tmx-pmx)*.06; pmy+=(tmy-pmy)*.06;
     shadow.style.transform=`translate(${-pmx*16}px,${-pmy*10+G*.08}px)`;
     echo.style.transform=`translate(${pmx*26}px,${pmy*18}px) scale(1.035)`;
-    // background: fog + dust with depth
+    mk.style.transform=`translate(${pmx*8}px,${pmy*6}px)`;
     bx.setTransform(1,0,0,1,0,0); bx.clearRect(0,0,W,H);
     for(const f of fog){ const x=(f.x+Math.sin(now*.00005*f.s+f.ph)*.08)*W+pmx*-30*f.s, y=(f.y+Math.cos(now*.00004*f.s+f.ph)*.06)*H+pmy*-20*f.s, r=f.r*Math.max(W,H);
       const g=bx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,"rgba(0,0,0,.028)"); g.addColorStop(1,"rgba(0,0,0,0)"); bx.fillStyle=g; bx.fillRect(0,0,W,H); }
-    for(const d of dust){ const z=.3+d.z*1.2; let y=(d.y - now*.000008*z)%1; if(y<0) y+=1; const x=d.x*W+pmx*-14*z, yy=y*H+pmy*-10*z; bx.fillStyle=`rgba(0,0,0,${.12+d.z*.35})`; const s=.5+d.z*1.6; bx.fillRect(x,yy,s,s); }
+    for(const d of dust){ const z=.3+d.z*1.2; let y=(d.y-now*.000008*z)%1; if(y<0) y+=1; bx.fillStyle=`rgba(0,0,0,${.1+d.z*.3})`; const s=.5+d.z*1.5; bx.fillRect(d.x*W+pmx*-14*z,y*H+pmy*-10*z,s,s); }
+    drawLily(now);
 
-    // ink layer
     ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,cv.width,cv.height);
-    if(done) ctx.drawImage(drips,0,0);
-    // glitch: slice the name into bands that slip sideways near the pointer (or on an idle pulse)
-    let gy=-1, gR=0;
-    if(done && inside && px>bbox.x-40 && px<bbox.x+bbox.w+40 && py>bbox.y-40 && py<bbox.y+bbox.h+40){ gy=py; gR=G*.28; }
-    else if(done && !reduce){ if(!pulse && now-lastPulse>3800){ pulse={y:bbox.y+Math.random()*bbox.h, t:now}; lastPulse=now; } if(pulse){ const a=(now-pulse.t)/420; if(a>1) pulse=null; else { gy=pulse.y; gR=G*.18*Math.sin(a*Math.PI); } } }
-    if(gy>=0 && gR>1){
-      const q=Math.floor(now/70); let y=Math.floor(bbox.y-G*.2), band=0;
-      const top=Math.floor(bbox.y-G*.2), bot=Math.ceil(bbox.y+bbox.h+G*.2);
+    let gy=-1,gR=0;
+    if(done&&inside&&px>bbox.x-40&&px<bbox.x+bbox.w+40&&py>bbox.y-40&&py<bbox.y+bbox.h+40){ gy=py; gR=G*.28; }
+    else if(done&&!reduce){ if(!pulse&&now-lastPulse>4200){ pulse={y:bbox.y+Math.random()*bbox.h,t:now}; lastPulse=now; } if(pulse){ const a=(now-pulse.t)/420; if(a>1) pulse=null; else { gy=pulse.y; gR=G*.18*Math.sin(a*Math.PI); } } }
+    if(gy>=0&&gR>1){
+      const q=Math.floor(now/70), top=Math.floor(bbox.y-G*.2), bot=Math.ceil(bbox.y+bbox.h+G*.2); let y=top, band=0;
       ctx.drawImage(glyph,0,0,cv.width,top*DPR,0,0,cv.width,top*DPR);
-      while(y<bot){ const r=rng(band*131+q*7); const h=3+Math.floor(r()*10); const d=Math.abs(y-gy); let off=0; if(d<gR){ const k=1-d/gR; off=(r()-.5)*2*k*G*.14; if(r()<.25) off*=3; }
-        ctx.drawImage(glyph,0,y*DPR,cv.width,h*DPR,off*DPR,y*DPR,cv.width,h*DPR); y+=h; band++; }
+      while(y<bot){ const r=rng(band*131+q*7), h=3+Math.floor(r()*10), d=Math.abs(y-gy); let off=0, hot=false;
+        if(d<gR){ const k=1-d/gR; off=(r()-.5)*2*k*G*.14; if(r()<.25) off*=3; hot=r()<.09*k; }
+        ctx.drawImage(glyph,0,y*DPR,cv.width,h*DPR,off*DPR,y*DPR,cv.width,h*DPR);
+        if(hot){ ctx.save(); ctx.globalCompositeOperation="source-atop"; ctx.fillStyle="#e1251b"; ctx.fillRect(0,y*DPR,cv.width,h*DPR); ctx.restore(); }
+        y+=h; band++; }
       ctx.drawImage(glyph,0,bot*DPR,cv.width,cv.height-bot*DPR,0,bot*DPR,cv.width,cv.height-bot*DPR);
-      if(inside){ // red scan line + readout
-        ctx.setTransform(DPR,0,0,DPR,0,0); ctx.fillStyle="#e1251b"; ctx.fillRect(bbox.x-30,gy,bbox.w+60,1);
-        ctx.font="10px 'Martian Mono', monospace"; ctx.fillText(`y ${pad(gy)}`, bbox.x+bbox.w+38, gy+3.5);
-      }
     } else ctx.drawImage(glyph,0,0);
-
-    // plotter head while writing: a red point that lays down each stroke
-    if(tip){
-      ctx.setTransform(DPR,0,0,DPR,0,0);
-      ctx.strokeStyle="#e1251b"; ctx.lineWidth=1; ctx.beginPath();
-      ctx.moveTo(tip[0]-18,tip[1]); ctx.lineTo(tip[0]-6,tip[1]); ctx.moveTo(tip[0]+6,tip[1]); ctx.lineTo(tip[0]+18,tip[1]);
-      ctx.moveTo(tip[0],tip[1]-18); ctx.lineTo(tip[0],tip[1]-6); ctx.moveTo(tip[0],tip[1]+6); ctx.lineTo(tip[0],tip[1]+18); ctx.stroke();
-      ctx.fillStyle="#e1251b"; ctx.beginPath(); ctx.arc(tip[0],tip[1],3,0,7); ctx.fill();
-      ctx.font="10px 'Martian Mono', monospace"; ctx.fillText(`stroke ${String(k+1).padStart(2,"0")}/${SEQ.length}`, tip[0]+24, tip[1]-10);
-      ctx.fillStyle="#000"; ctx.fillText(`${pad(tip[0])} ${pad(tip[1])}`, tip[0]+24, tip[1]+4);
-    }
+    if(tip){ ctx.setTransform(DPR,0,0,DPR,0,0); const gl=ctx.createRadialGradient(tip[0],tip[1],0,tip[0],tip[1],12); gl.addColorStop(0,"rgba(225,37,27,.35)"); gl.addColorStop(1,"rgba(225,37,27,0)"); ctx.fillStyle=gl; ctx.fillRect(tip[0]-12,tip[1]-12,24,24); ctx.fillStyle="#e1251b"; ctx.beginPath(); ctx.arc(tip[0],tip[1],3,0,7); ctx.fill(); }
   }
 
   function loop(now){ frame(now); if(visible) raf=requestAnimationFrame(loop); }
-  function replay(){ start=performance.now(); drawn=SEQ.map(()=>0); done=false; dripList=[]; hero.classList.remove("done"); dx.clearRect(0,0,drips.width,drips.height); redrawGlyph(); if(reduce){ finish(); } }
-  function finish(){ drawn=SEQ.map(()=>1); done=true; redrawGlyph(); renderDrips(1); hero.classList.add("done"); render(performance.now(),null,-1); }
+  function finish(){ drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); done=true; lilyT=0; hero.classList.add("done","lilyon"); redrawGlyph(); redrawMarks(); render(performance.now(),null); }
+  function replay(){ start=performance.now(); drawn=SEQ.map(()=>0); air=SEQ.map(()=>0); done=false; lilyT=-1; hero.classList.remove("done","lilyon"); redrawGlyph(); redrawMarks(); if(reduce) finish(); }
 
   hero.addEventListener("pointermove",e=>{ const b=hero.getBoundingClientRect(); px=e.clientX-b.left; py=e.clientY-b.top; inside=true; tmx=(px/W-.5)*2; tmy=(py/H-.5)*2; });
   hero.addEventListener("pointerleave",()=>{ inside=false; tmx=tmy=0; });
   $("#replay").addEventListener("click",replay);
-  let rT=0; addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ layout(); if(reduce) render(performance.now(),null,-1); },120); });
-
+  let rT=0; addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ layout(); if(reduce) render(performance.now(),null); },120); });
   const ready=()=>{ layout(); if(reduce){ finish(); } else { start=performance.now(); raf=requestAnimationFrame(loop);
-      new IntersectionObserver(([en])=>{ visible=en.isIntersecting; if(visible){ cancelAnimationFrame(raf); raf=requestAnimationFrame(loop);} }).observe(hero); } };
+    new IntersectionObserver(([en])=>{ visible=en.isIntersecting; if(visible){ cancelAnimationFrame(raf); raf=requestAnimationFrame(loop);} }).observe(hero); } };
   (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(ready);
 })();
 
-/* nav: mark current section */
+/* nav + spine: mark current section */
 (function(){
-  const links=[...document.querySelectorAll(".nav a")];
-  const map={work:"work",index:"work",lab:"lab",process:"about",about:"about",contact:"contact"};
+  const links=[...document.querySelectorAll(".nav a")], verts=[...document.querySelectorAll(".spine a")];
+  const map={work:"work",index:"work",lab:"lab",process:"process",about:"about",contact:"contact"};
   const secs=Object.keys(map).map(id=>document.getElementById(id));
   let tk=false;
   function upd(){ tk=false; let cur=""; const line=innerHeight*.45;
     for(const s of secs){ if(s.getBoundingClientRect().top<line) cur=map[s.id]; }
     if(innerHeight+scrollY>=document.body.scrollHeight-4) cur="contact";
-    links.forEach(a=>a.setAttribute("aria-current",a.getAttribute("href")==="#"+cur)); }
+    document.body.classList.toggle("past", scrollY>innerHeight*.6);
+    const navCur=cur==="process"?"about":cur;
+    links.forEach(a=>a.setAttribute("aria-current",a.getAttribute("href")==="#"+navCur));
+    verts.forEach(a=>a.setAttribute("aria-current",a.getAttribute("href")==="#"+cur)); }
   addEventListener("scroll",()=>{ if(!tk){ tk=true; requestAnimationFrame(upd); } },{passive:true}); upd();
 })();
 </script>
