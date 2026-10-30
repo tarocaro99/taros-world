@@ -179,8 +179,8 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .row .t{font-family:var(--disp);font-size:clamp(18px,1.9vw,27px);line-height:1.15;letter-spacing:-.015em;transition:transform .35s steps(4,jump-end)}
 .row .k,.row .m{color:var(--mute);font-family:var(--sc);font-size:13px;letter-spacing:.03em}
 .row .y{text-align:right;font-family:var(--sc);font-size:13px}
-.row:hover,.row:focus-visible{background:var(--ink);color:#fff}
-.row:hover .k,.row:hover .m,.row:focus-visible .k,.row:focus-visible .m{color:#9a9a9a}
+.row:hover,.row:focus-visible{color:var(--accent)}
+.row:hover .k,.row:hover .m,.row:focus-visible .k,.row:focus-visible .m{color:var(--accent)}
 .row:hover .t,.row:focus-visible .t{transform:translateX(14px)}
 .peek{position:fixed;left:0;top:0;width:260px;pointer-events:none;z-index:30;opacity:0;transition:opacity .25s;will-change:transform}
 .peek.on{opacity:1}
@@ -199,7 +199,7 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .win.held{z-index:20}
 .win.held .tb{cursor:grabbing}
 .readme{grid-column:1/span 5;grid-row:1;align-self:start;margin-top:10px}
-.readme .note{padding:18px 20px 22px;font-size:clamp(15px,1.2vw,17px);line-height:1.7}
+.readme .note{padding:0;font-size:clamp(15px,1.2vw,17px);line-height:1.7}
 .readme .note p+p{margin-top:.9em}
 .readme .note strong{font-weight:400;font-style:italic;color:var(--accent)}
 .fclip{grid-column:7/span 6;grid-row:1/span 2;align-self:start}
@@ -394,8 +394,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   <section class="block fs" id="failsafe" aria-labelledby="fs-h">
     <div class="head"><h2 id="fs-h"><span class="ico sym ico-knot" aria-hidden="true"></span>Fail-Safe</h2></div>
     <div class="desk" id="desk">
-      <article class="win readme" data-win aria-labelledby="readme-t">
-        <div class="tb" data-drag><span id="readme-t">readme.txt</span><i class="x" aria-hidden="true"></i></div>
+      <article class="readme">
         <div class="note">
           <p><strong>This is where the experiments live.</strong> Nothing here is polished, and that’s on purpose. I treat every project like a prototype: try the thing I don’t know how to do yet, ship a rough version, and learn from whatever breaks.</p>
           <p>“Fail-Safe” is how I think. A failed experiment is safe as long as it teaches me something I can carry into the next build, and “Absurd Optimism” is what keeps me trying the next one. These pieces are hand-drawn and hand-edited, no AI, made just to see if I could. Seeing where my skills stop is how I figure out where to push next.</p>
@@ -705,10 +704,11 @@ let glitchKick=()=>{};
   const cv=$("#tryagain"), sec=$("#failsafe"); let base=null, W=0, H=0, D=1, vis=false, t0=0, kick=0, raf=0, nextG=0, bands=[];
   function build(){
     D=Math.min(2,devicePixelRatio||1); const cw=cv.clientWidth; if(!cw) return;
-    const fs=cw*.205; W=Math.round(cw*D); H=Math.round(fs*.86*D); cv.width=W; cv.height=H;
+    const m=document.createElement("canvas").getContext("2d"); m.font=`100px "IM Fell English"`; const tw100=m.measureText("TRY AGAIN").width||600;
+    const fs=Math.min(cw*.9/tw100*100, innerHeight*.32); W=Math.round(cw*D); H=Math.round(fs*.86*D); cv.width=W; cv.height=H;
     const t=document.createElement("canvas"); t.width=W; t.height=H; const tg=t.getContext("2d");
     tg.fillStyle="#fff"; tg.fillRect(0,0,W,H); tg.fillStyle="#000"; tg.font=`${fs*D}px "IM Fell English"`; tg.textBaseline="alphabetic";
-    tg.fillText("TRY AGAIN",-fs*.02*D,H*.86);
+    tg.fillText("TRY AGAIN",0,H*.86);
     // fade toward the bottom
     const gr=tg.createLinearGradient(0,0,0,H); gr.addColorStop(0,"rgba(255,255,255,0)"); gr.addColorStop(.3,"rgba(255,255,255,0)"); gr.addColorStop(1,"rgba(255,255,255,.88)");
     tg.fillStyle=gr; tg.fillRect(0,0,W,H);
