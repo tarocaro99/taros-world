@@ -459,7 +459,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
       <article class="readme">
         <div class="note">
           <p><strong>This is where the experiments live.</strong> Nothing here is polished, and that’s on purpose. I treat every project like a prototype: try the thing I don’t know how to do yet, ship a rough version, and learn from whatever breaks.</p>
-          <p>“Fail-Safe” is how I think. A failed experiment is safe as long as it teaches me something I can carry into the next build, and “Absurd Optimism” is what keeps me trying the next one. Two of these pieces are hand-drawn and hand-edited, no AI, made just to see if I could. The third, CTRL.exe, is the opposite experiment, made with AI-native tools to see how far that workflow can carry a story. Seeing where my skills stop is how I figure out where to push next.</p>
+          <p>“Fail-Safe” is how I think. A failed experiment is safe as long as it teaches me something I can carry into the next build, and “Absurd Optimism” is what keeps me trying the next one. Two of these pieces are hand-drawn and hand-edited, no AI, made just to see if I could. The third, For Summit, is the opposite experiment, made with AI-native tools to see how far that workflow can carry a story. Seeing where my skills stop is how I figure out where to push next.</p>
         </div>
       </article>
       <div id="labslots" style="display:contents"></div>
@@ -619,7 +619,7 @@ const PROJECTS = [
     sub:"A glitching brain that resolves into dripping type.",
     blurb:"My first real attempt at motion graphics, made in Pikimov. A pixelated brain glitches through color until one thought takes hold and melts into the words. Every frame is drawn by hand. The easing is rough in spots, and those spots taught me more about keyframing than any tutorial.",
     thumb:"assets/thumbs/absurd_optimism_thumb.jpg", video:"assets/absurd_optimism.mp4", url:"", tags:["Frame-by-frame","Pikimov"] },
-  { title:"CTRL.exe", year:"", kind:"AI-native short", medium:"Motion", lab:true, audio:true,
+  { title:"For Summit", year:"", kind:"AI-native short", medium:"Motion", lab:true, audio:true,
     sub:"A fan piece for John Summit's CTRL ESCAPE: a one-minute pixel-art run through a cluttered desktop, built with AI-native tools.",
     blurb:"A character hauls a CTRL sign through a desktop that keeps interrupting her: a profile page, a messenger asking about the job search, error dialogs, a rave on a media player, a platformer that glitches into binary. I made it for fun, as a fan piece for John Summit's CTRL ESCAPE album and tour. House music is how I get out of my own head, and the desktop here is the thing I'm trying to escape. It was also my test of how far an AI-native workflow could carry a story I wanted to tell.",
     thumb:"assets/ctrl_exe_thumb.jpg", video:"assets/ctrl_exe.mp4", url:"", tags:["AI-native workflow","Pixel art","Motion"] },
@@ -628,7 +628,7 @@ const PROJECTS = [
     blurb:"A scribble of ink opens into a pair of eyes that blink and cycle through color, then close back into the scribble so the piece loops. A few transitions jump instead of flow, and I kept them, because the point was to practice, not to perfect.",
     thumb:"assets/thumbs/fail_safe_thumb.jpg", video:"assets/fail_safe.mp4", url:"", tags:["Loop timing","Pikimov"] },
 ];
-const LABORDER=["Absurd Optimism","Fail-Safe","CTRL.exe"];
+const LABORDER=["Absurd Optimism","Fail-Safe","For Summit"];
 const ORDER=["Dead Vapes Society: Exhale","Infinite Regress","InterACE","C-STEM Success Signage"];
 PROJECTS.sort((a,b)=>{ const x=ORDER.indexOf(a.title), y=ORDER.indexOf(b.title); return (x<0?99:x)-(y<0?99:y); });
 { const labs=PROJECTS.filter(p=>p.lab).sort((a,b)=>LABORDER.indexOf(a.title)-LABORDER.indexOf(b.title)); let k=0; PROJECTS.forEach((p,i)=>{ if(p.lab) PROJECTS[i]=labs[k++]; }); }
