@@ -145,10 +145,9 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
   mask:radial-gradient(circle at 0 0,var(--g)) 0 0/51% 51% no-repeat,radial-gradient(circle at 100% 0,var(--g)) 100% 0/51% 51% no-repeat,radial-gradient(circle at 0 100%,var(--g)) 0 100%/51% 51% no-repeat,radial-gradient(circle at 100% 100%,var(--g)) 100% 100%/51% 51% no-repeat}
 .wj.sm{--c:9px}
 .tex img{width:100%;height:100%;object-fit:cover}
-.tex canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;clip-path:inset(0 0 0 0);transition:clip-path .8s var(--ease)}
-.tex .scan{position:absolute;left:0;right:0;top:0;height:1px;background:var(--accent);opacity:0;pointer-events:none;z-index:2}
-.tex.lit canvas{clip-path:inset(100% 0 0 0)}
-.tex.lit .scan{animation:scan .8s var(--ease)}
+.tex canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:calc(1 - var(--dev,0));transition:opacity .5s var(--ease)}
+.tex .scan{display:none}
+.tex.lit canvas{opacity:0}
 @keyframes scan{0%{top:0;opacity:1}90%{opacity:1}100%{top:100%;opacity:0}}
 .tex .coord{position:absolute;left:8px;bottom:6px;z-index:2;font-size:13px;color:#fff;mix-blend-mode:difference}
 
@@ -160,7 +159,7 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .feat:nth-child(even) .wrap{grid-column:5/span 8;grid-row:1}
 .feat:nth-child(even) .txt{grid-column:1/span 3;grid-row:1}
 .feat .wrap .tex img{height:auto}
-.feat h3{font-family:var(--disp);font-weight:400;font-size:clamp(19px,1.7vw,25px);line-height:1.2;letter-spacing:-.01em;margin-bottom:14px}
+.feat h3{font-family:var(--disp);font-weight:400;font-size:clamp(26px,2.6vw,40px);line-height:1.08;letter-spacing:-.02em;margin-bottom:16px}
 .feat .sub{margin-bottom:18px}
 .facts{display:grid;grid-template-columns:auto 1fr;gap:3px 16px;font-size:14px;margin-bottom:22px}
 .facts dt{color:var(--mute);font-family:var(--sc);letter-spacing:.03em;font-size:13px}
@@ -403,7 +402,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
 
   <section class="block" id="work" aria-labelledby="work-h">
     <div class="head"><h2 id="work-h"><span class="ico sym ico-coin" aria-hidden="true"></span>Selected work</h2></div>
-    <p class="lede">Four projects that move between screen and paper. <span id="inkhint">Hover an image to bring it into color.</span></p>
+    <p class="lede">Four projects that move between screen and paper. <span id="inkhint">Each one develops from print into color as you scroll to it.</span></p>
     <div class="features" id="features"></div>
   </section>
 
@@ -522,7 +521,7 @@ const PROJECTS = [
     role:"Editorial layout, typography, web build",
     thumb:"assets/thumbs/infinite_regress_thumb.jpg", url:"assets/infinite-regress-flipbook.html", cta:"Flip through it",
     tags:["Publication design","Typography","Interactive"] },
-  { title:"Constructing Campus Identity", year:"2026", kind:"Design ethnography", medium:"Paper", featured:true,
+  { title:"Constructing Campus Identity", year:"2026", kind:"Design ethnography", medium:"Paper",
     sub:"Fieldwork, a critique of UC Davis branding and a satirical mascot concept.",
     blurb:"UC Davis leans on horses, sheep and cows to tell its story, but those symbols don’t always match how the campus actually runs. This ethnographic portfolio traces that gap through fieldwork at the Equestrian Center, the Silo and the Sheep Mowers mural, then proposes a satirical mascot, Sunpebble, to make the contradiction visible.",
     role:"Fieldwork, brand critique, mascot design",
@@ -558,8 +557,10 @@ const PROJECTS = [
   { title:"Corky Lee Zine", year:"", kind:"Zine", medium:"Paper",
     sub:"A zine on Sinophobia and anti-Chinese sentiment in the West, built around Corky Lee’s photographs.",
     blurb:"Photographs by Corky Lee.", thumb:"assets/thumbs/corky_lee_zine.jpg", url:"", tags:["Zine","Editorial","Print"] },
-  { title:"Clarendon Type Poster", year:"", kind:"Typography", medium:"Paper",
-    sub:"A type specimen poster exploring the Clarendon slab serif.", blurb:"",
+  { title:"Clarendon Type Poster", year:"", kind:"Typography", medium:"Paper", featured:true,
+    sub:"A type specimen poster built around the Clarendon slab serif.",
+    blurb:"Clarendon, drawn by Robert Besley in 1845, blown up until the R and P become shapes instead of letters. The full alphabet and numerals sit underneath as the specimen, with the name running up the edge.",
+    role:"Typography, layout, print",
     thumb:"assets/thumbs/clarendon_poster.jpg", url:"", tags:["Typography","Poster"] },
   { title:"The Mask Compliance Report", year:"2025", kind:"Photo essay", medium:"Art",
     sub:"A photo essay on productivity culture: photography, sequencing and layout.",
@@ -582,6 +583,8 @@ const PROJECTS = [
     blurb:"A scribble of ink opens into a pair of eyes that blink and cycle through color, then close back into the scribble so the piece loops. A few transitions jump instead of flow, and I kept them, because the point was to practice, not to perfect.",
     thumb:"assets/thumbs/fail_safe_thumb.jpg", video:"assets/fail_safe.mp4", url:"", tags:["Loop timing","Pikimov"] },
 ];
+const ORDER=["Dead Vapes Society: Exhale","Infinite Regress","Clarendon Type Poster","C-STEM Success Signage"];
+PROJECTS.sort((a,b)=>{ const x=ORDER.indexOf(a.title), y=ORDER.indexOf(b.title); return (x<0?99:x)-(y<0?99:y); });
 const FIELD = [["lantern_street","Lantern street"],["river_night","River at night"],["lantern_trees","Lantern trees"],["green_lake","Green lake"],["edm_stage","Festival stage"],["cave_thumbsup","Cave, approved"]];
 
 const $=(s,el=document)=>el.querySelector(s);
@@ -646,7 +649,7 @@ $("#features").innerHTML=PROJECTS.filter(p=>p.featured).map(p=>`
     <div class="txt">
       <h3>${esc(p.title)}</h3>
       <p class="sub">${esc(p.sub)}</p>
-      <dl class="facts"><dt>Type</dt><dd>${esc(p.kind)}</dd><dt>Year</dt><dd>${esc(p.year||"—")}</dd><dt>Role</dt><dd>${esc(p.role||"")}</dd></dl>
+      <dl class="facts"><dt>Type</dt><dd>${esc(p.kind)}</dd>${p.year?`<dt>Year</dt><dd>${esc(p.year)}</dd>`:""}<dt>Role</dt><dd>${esc(p.role||"")}</dd></dl>
       <button class="btn" type="button" data-open="${esc(p.title)}">See the project</button>
     </div>
   </article>`).join("");
@@ -768,11 +771,12 @@ $("#field").innerHTML=FIELD.map(([f,c])=>`<figure>${texHTML(`assets/china/thumbs
   const els=[...document.querySelectorAll("[data-tex]")];
   const io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ texify(en.target); io.unobserve(en.target); } }),{rootMargin:"400px 0px"});
   els.forEach(el=>{ io.observe(el); bindTex(el); });
-  if(!fine){
-    $("#inkhint").textContent="Each image comes into color as you scroll to it.";
-    const lit=new IntersectionObserver(es=>es.forEach(en=>en.target.classList.toggle("lit",en.isIntersecting)),{rootMargin:"-35% 0px -35% 0px"});
-    els.forEach(el=>lit.observe(el));
-  }
+  if(!reduce){
+    let tick=0; const upd=()=>{ tick=0; const vh=innerHeight;
+      els.forEach(el=>{ const r=el.getBoundingClientRect(); if(r.bottom<-80||r.top>vh+80) return;
+        const m=(r.top+r.bottom)/2, d=Math.abs(m-vh/2)/(vh*.42), p=Math.max(0,Math.min(1,1.25-d)); el.style.setProperty("--dev",p.toFixed(3)); }); };
+    addEventListener("scroll",()=>{ if(!tick) tick=requestAnimationFrame(upd); },{passive:true}); addEventListener("resize",upd); upd();
+  } else els.forEach(el=>el.style.setProperty("--dev",0));
 })();
 
 /* ===================== SPINE SPECKS: pixels that glitch in and out ===================== */
