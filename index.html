@@ -820,11 +820,7 @@ tick(); setInterval(tick,15000);
   function drawAir(k,f){
     const A=airPath(k); if(!A) return null;
     const {p0,c,p1}=A, q=(t)=>[(1-t)*(1-t)*p0[0]+2*(1-t)*t*c[0]+t*t*p1[0],(1-t)*(1-t)*p0[1]+2*(1-t)*t*c[1]+t*t*p1[1]];
-    mx.save(); mx.setTransform(DPR,0,0,DPR,0,0); mx.strokeStyle="rgba(143,28,22,.55)"; mx.lineWidth=.9; mx.setLineDash([]);
-    mx.beginPath(); mx.moveTo(p0[0],p0[1]); const n=24; for(let i=1;i<=Math.ceil(n*f);i++) { const p=q(Math.min(f,i/n)); mx.lineTo(p[0],p[1]); } mx.stroke();
-    // tiny tick where the pen touches down
-    if(f>=1){ mx.fillStyle="#8f1c16"; mx.fillRect(p1[0]-1,p1[1]-1,2,2); }
-    mx.restore(); return q(f);
+    return q(f);   // the pen still travels between strokes, but leaves no line
   }
   function texture(){}
   function redrawGlyph(){ gx.setTransform(1,0,0,1,0,0); gx.clearRect(0,0,glyph.width,glyph.height); SEQ.forEach((s,k)=>{ if(drawn[k]>0) paintStroke(k,drawn[k]); }); if(done) texture(); syncLayers(); }
