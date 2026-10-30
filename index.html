@@ -30,7 +30,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{background:var(--paper);color:var(--ink);font-family:var(--mono);font-stretch:87.5%;font-weight:330;font-size:14.5px;line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:var(--paper);color:var(--ink);font-family:var(--disp);font-weight:400;font-size:16px;line-height:1.7;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img,video,canvas{display:block;max-width:100%}
 a{color:inherit}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
@@ -39,6 +39,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .skip{position:absolute;left:-999px;top:8px;background:var(--ink);color:#fff;padding:8px 12px;z-index:100}
 .skip:focus{left:8px}
 .disp{font-family:var(--disp);font-weight:400;letter-spacing:-.03em}
+
+/* small data stays mono */
+.clocks,.head .meta,.filters .count,.steps .ix,.fine,.state,.d-top,.peek span,.row .y,.portrait figcaption,.field figcaption,footer > span,.tools{font-family:var(--mono);font-stretch:87.5%;font-weight:330;letter-spacing:0}
 
 /* film grain over everything */
 .grain{position:fixed;inset:-50%;width:200%;height:200%;pointer-events:none;z-index:60;opacity:.15;mix-blend-mode:multiply;animation:grain 1s steps(6) infinite}
