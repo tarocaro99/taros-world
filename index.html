@@ -218,9 +218,11 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .readme .note strong{font-weight:400;font-style:italic;color:var(--accent)}
 .fclip{grid-column:7/span 6;grid-row:1/span 2;align-self:start}
 .fclip.b{grid-column:2/span 5;grid-row:2/span 2;margin-top:24px}
+.fclip.c{grid-column:3/span 8;grid-row:4;margin-top:24px}
 .fclip .vid{position:relative;aspect-ratio:4/3;background:#fff;overflow:hidden;cursor:pointer}
 .fclip video,.fclip .vid img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:url(#blueprint)}
 .fclip video,.fclip .vid img{transition:filter .3s}
+.fclip .vid.wide{aspect-ratio:16/9}
 .fclip .vid img{transition:opacity .4s,filter .3s}
 .fclip.playing video,.fclip .vid:hover video,.fclip .vid:hover img,.fclip .vid:focus-visible video,.fclip .vid:focus-visible img{filter:none}
 .fclip.playing .vid img{opacity:0}
@@ -331,7 +333,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   .row .k{grid-row:2;grid-column:1}
   .row .m{display:none}
   .row .y{grid-row:1;grid-column:2}
-  .readme,.fclip,.fclip.b,.cascade{grid-column:1/-1;grid-row:auto;margin-top:0}
+  .readme,.fclip,.fclip.b,.fclip.c,.cascade{grid-column:1/-1;grid-row:auto;margin-top:0}
   .cascade{min-height:280px}
   .spec{display:none}
   .row{padding:14px 6px}
@@ -419,7 +421,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
       <article class="readme">
         <div class="note">
           <p><strong>This is where the experiments live.</strong> Nothing here is polished, and that’s on purpose. I treat every project like a prototype: try the thing I don’t know how to do yet, ship a rough version, and learn from whatever breaks.</p>
-          <p>“Fail-Safe” is how I think. A failed experiment is safe as long as it teaches me something I can carry into the next build, and “Absurd Optimism” is what keeps me trying the next one. These pieces are hand-drawn and hand-edited, no AI, made just to see if I could. Seeing where my skills stop is how I figure out where to push next.</p>
+          <p>“Fail-Safe” is how I think. A failed experiment is safe as long as it teaches me something I can carry into the next build, and “Absurd Optimism” is what keeps me trying the next one. Two of these pieces are hand-drawn and hand-edited, no AI, made just to see if I could. The third, CTRL.exe, is the opposite experiment, made with AI-native tools to see how far that workflow can carry a story. Seeing where my skills stop is how I figure out where to push next.</p>
         </div>
       </article>
       <div id="labslots" style="display:contents"></div>
@@ -527,9 +529,10 @@ const PROJECTS = [
     role:"Fieldwork, brand critique, mascot design",
     thumb:"assets/thumbs/campus_identity_thumb.jpg", url:"assets/campus_identity.pdf", cta:"Open the PDF",
     tags:["UX research","Ethnography","Brand"] },
-  { title:"InterACE", year:"2024", kind:"UX case study", medium:"Screen",
+  { title:"InterACE", year:"2024", kind:"UX case study", medium:"Screen", featured:true,
     sub:"An AI interview-prep app: user research, brand identity and a high-fidelity prototype.",
     blurb:"Interview prep usually means rehearsing alone and hoping for the best. InterACE learns where you stumble and coaches you through it, so practice actually moves you somewhere.",
+    role:"Research, brand identity, hi-fi prototype",
     thumb:"assets/thumbs/interace_thumb.jpg", gallery:["assets/hero/interace_start.jpg","assets/hero/interace_profile.jpg"],
     url:"https://www.figma.com/proto/MbtfQ5xZ7t3U4Dy1Hq6QgE/DES112-InterACE-Case-Study?node-id=1-2&p=f&viewport=422%2C25%2C0.04&t=HOjDy5ylsCMUGnxX-1&scaling=scale-down-width&content-scaling=fixed&page-id=0%3A1",
     cta:"Open the prototype", tags:["Product design","Branding","Figma"] },
@@ -557,7 +560,7 @@ const PROJECTS = [
   { title:"Corky Lee Zine", year:"", kind:"Zine", medium:"Paper",
     sub:"A zine on Sinophobia and anti-Chinese sentiment in the West, built around Corky Lee’s photographs.",
     blurb:"Photographs by Corky Lee.", thumb:"assets/thumbs/corky_lee_zine.jpg", url:"", tags:["Zine","Editorial","Print"] },
-  { title:"Clarendon Type Poster", year:"", kind:"Typography", medium:"Paper", featured:true,
+  { title:"Clarendon Type Poster", year:"", kind:"Typography", medium:"Paper",
     sub:"A type specimen poster built around the Clarendon slab serif.",
     blurb:"Clarendon, drawn by Robert Besley in 1845, blown up until the R and P become shapes instead of letters. The full alphabet and numerals sit underneath as the specimen, with the name running up the edge.",
     role:"Typography, layout, print",
@@ -578,13 +581,19 @@ const PROJECTS = [
     sub:"A glitching brain that resolves into dripping type.",
     blurb:"My first real attempt at motion graphics, made in Pikimov. A pixelated brain glitches through color until one thought takes hold and melts into the words. Every frame is drawn by hand. The easing is rough in spots, and those spots taught me more about keyframing than any tutorial.",
     thumb:"assets/thumbs/absurd_optimism_thumb.jpg", video:"assets/absurd_optimism.mp4", url:"", tags:["Frame-by-frame","Pikimov"] },
+  { title:"CTRL.exe", year:"", kind:"AI-native short", medium:"Motion", lab:true, audio:true,
+    sub:"A one-minute pixel platformer set inside an old desktop, made with AI-native workflows.",
+    blurb:"A character hauls a CTRL sign through a desktop that keeps interrupting her: a profile page, a messenger asking about the job search, error dialogs, a rave on a media player, a platformer that glitches into binary. I made it to find out how far an AI-native workflow could carry a story I wanted to tell.",
+    thumb:"assets/ctrl_exe_thumb.jpg", video:"assets/ctrl_exe.mp4", url:"", tags:["AI-native workflow","Pixel art","Motion"] },
   { title:"Fail-Safe", year:"", kind:"Motion experiment", medium:"Motion", lab:true,
     sub:"Hand-drawn eyes that blink through color inside a loop of scribbled ink.",
     blurb:"A scribble of ink opens into a pair of eyes that blink and cycle through color, then close back into the scribble so the piece loops. A few transitions jump instead of flow, and I kept them, because the point was to practice, not to perfect.",
     thumb:"assets/thumbs/fail_safe_thumb.jpg", video:"assets/fail_safe.mp4", url:"", tags:["Loop timing","Pikimov"] },
 ];
-const ORDER=["Dead Vapes Society: Exhale","Infinite Regress","Clarendon Type Poster","C-STEM Success Signage"];
+const LABORDER=["Absurd Optimism","Fail-Safe","CTRL.exe"];
+const ORDER=["Dead Vapes Society: Exhale","Infinite Regress","InterACE","C-STEM Success Signage"];
 PROJECTS.sort((a,b)=>{ const x=ORDER.indexOf(a.title), y=ORDER.indexOf(b.title); return (x<0?99:x)-(y<0?99:y); });
+{ const labs=PROJECTS.filter(p=>p.lab).sort((a,b)=>LABORDER.indexOf(a.title)-LABORDER.indexOf(b.title)); let k=0; PROJECTS.forEach((p,i)=>{ if(p.lab) PROJECTS[i]=labs[k++]; }); }
 const FIELD = [["lantern_street","Lantern street"],["river_night","River at night"],["lantern_trees","Lantern trees"],["green_lake","Green lake"],["edm_stage","Festival stage"],["cave_thumbsup","Cave, approved"]];
 
 const $=(s,el=document)=>el.querySelector(s);
@@ -685,22 +694,24 @@ if(fine){
 /* ===================== FAIL-SAFE ===================== */
 if(fine) document.documentElement.classList.add("fine-ptr");
 $("#labslots").innerHTML=PROJECTS.filter(p=>p.lab).map((p,k)=>`
-  <article class="win fclip${k?" b":""}" data-win>
+  <article class="win fclip${k===1?" b":k>1?" c":""}" data-win>
     <div class="tb" data-drag><span>${p.video.split("/").pop()}</span><i class="x" aria-hidden="true"></i></div>
-    <div class="vid" tabindex="0" role="button" aria-label="Play ${esc(p.title)}">
-      <video src="${p.video}" muted loop playsinline preload="none" aria-hidden="true"></video>
+    <div class="vid${p.audio?" wide":""}" tabindex="0" role="button" aria-label="Play ${esc(p.title)}${p.audio?" with sound":""}">
+      <video src="${p.video}" muted loop playsinline preload="none" aria-hidden="true"${p.audio?" data-audio":""}></video>
       <img src="${p.thumb}" alt="${esc(p.title)} still frame" loading="lazy">
     </div>
     <div class="cap"><div><h3>${esc(p.title)}</h3><p>${esc(p.sub)}</p></div><span class="st">Paused</span></div>
   </article>`).join("");
 document.querySelectorAll(".fclip").forEach(c=>{
-  const v=$("video",c),st=$(".st",c),box=$(".vid",c);
-  const play=()=>{ v.play().then(()=>{c.classList.add("playing"); st.textContent="Playing";}).catch(()=>{}); };
+  const v=$("video",c),st=$(".st",c),box=$(".vid",c), hasAudio=v.hasAttribute("data-audio"); let sound=false;
+  const play=()=>{ v.play().then(()=>{c.classList.add("playing"); st.textContent=sound?"Playing, sound on":"Playing";}).catch(()=>{}); };
   const pause=()=>{ v.pause(); c.classList.remove("playing"); st.textContent="Paused"; };
-  if(fine){ box.addEventListener("pointerenter",play); box.addEventListener("pointerleave",pause); }
-  box.addEventListener("click",()=>v.paused?play():pause());
-  box.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); v.paused?play():pause(); }});
-  if(!fine&&!reduce) new IntersectionObserver(([en])=>en.isIntersecting?play():pause(),{threshold:.6}).observe(box);
+  const toggle=()=>{ if(hasAudio){ if(v.paused||!sound){ sound=true; v.muted=false; play(); } else { sound=false; v.muted=true; pause(); } } else v.paused?play():pause(); };
+  if(fine){ box.addEventListener("pointerenter",()=>{ if(!sound) play(); }); box.addEventListener("pointerleave",()=>{ if(!sound) pause(); }); }
+  box.addEventListener("click",toggle);
+  box.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle(); }});
+  if(hasAudio) new IntersectionObserver(([en])=>{ if(!en.isIntersecting&&sound){ sound=false; v.muted=true; pause(); } },{threshold:.15}).observe(box);
+  if(!fine&&!reduce) new IntersectionObserver(([en])=>{ if(sound) return; en.isIntersecting?play():pause(); },{threshold:.6}).observe(box);
 });
 /* windows drag by their title bars, like the old desktop */
 let zTop=5;
