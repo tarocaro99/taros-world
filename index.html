@@ -476,7 +476,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
       <li><canvas class="proc wj" data-proc="decode" data-src="assets/art/p-decode.jpg" aria-hidden="true"></canvas>
         <h3>Decode<small>Puffs by the hour, Exhale</small></h3>
         <p>Working out why the irrational choice keeps winning. That’s where the economics comes in.</p>
-        <p class="see">See <button type="button" data-open="Dead Vapes Society: Exhale">Exhale</button></p></li>
+        <p class="see">See <button type="button" data-open="Exhale">Exhale</button></p></li>
       <li><canvas class="proc wj" data-proc="build" data-src="assets/art/p-build.jpg" aria-hidden="true"></canvas>
         <h3>Build<small>Infinite Regress</small></h3>
         <p>Making it in whatever medium fits, from a Figma flow to a printed zine to a working site, starting rough.</p>
@@ -540,7 +540,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
 <script>
 /* ===================== DATA ===================== */
 const PROJECTS = [
-  { title:"Dead Vapes Society: Exhale", year:"Ongoing", kind:"UX case study", medium:"Screen", featured:true,
+  { title:"Exhale", year:"Ongoing", kind:"UX case study", medium:"Screen", featured:true,
     sub:"A social habit tracker for vapers that pairs a clip-on sensor with friends-only pods.",
     blurb:"Every vaping app assumes you’re quitting. Exhale hands the choice back: take the red pill to quit or taper, or the blue pill to keep vaping and simply understand your patterns. Both run on the same auto-logged data, with friends-only pods instead of a lecture.",
     role:"Research, IA, wireframes, hi-fi prototype",
@@ -626,7 +626,7 @@ const PROJECTS = [
     thumb:"assets/thumbs/fail_safe_thumb.jpg", video:"assets/fail_safe.mp4", url:"", tags:["Loop timing","Pikimov"] },
 ];
 const LABORDER=["Absurd Optimism","Fail-Safe","For Summit"];
-const ORDER=["Dead Vapes Society: Exhale","Infinite Regress","InterACE","C-STEM Success Signage"];
+const ORDER=["Exhale","Infinite Regress","InterACE","C-STEM Success Signage"];
 PROJECTS.sort((a,b)=>{ const x=ORDER.indexOf(a.title), y=ORDER.indexOf(b.title); return (x<0?99:x)-(y<0?99:y); });
 { const labs=PROJECTS.filter(p=>p.lab).sort((a,b)=>LABORDER.indexOf(a.title)-LABORDER.indexOf(b.title)); let k=0; PROJECTS.forEach((p,i)=>{ if(p.lab) PROJECTS[i]=labs[k++]; }); }
 const FIELD = [["lantern_street","Lantern street"],["river_night","River at night"],["lantern_trees","Lantern trees"],["green_lake","Green lake"],["edm_stage","Festival stage"],["cave_thumbsup","Cave, approved"]];
