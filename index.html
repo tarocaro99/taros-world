@@ -313,6 +313,18 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .field figcaption{font-size:14px;line-height:1.3;font-style:italic;color:var(--mute);margin-top:8px}
 .field h3{font-family:var(--disp);font-weight:400;font-size:15px;margin-bottom:16px}
 
+/* gifts: paintings hung like a family wall */
+.gwall{column-count:3;column-gap:clamp(16px,2.4vw,36px);max-width:1440px}
+.gwall figure{break-inside:avoid;margin:0 0 clamp(16px,2.4vw,36px);cursor:zoom-in;opacity:0;transform:translateY(18px);transition:opacity .9s var(--ease),transform .9s var(--ease)}
+.gwall figure.in{opacity:1;transform:none}
+.gwall img{display:block;width:100%;height:auto;box-shadow:0 1px 2px rgba(0,0,0,.08),0 14px 30px -14px rgba(0,0,0,.28);transition:transform .5s var(--ease),box-shadow .5s var(--ease)}
+.gwall figure:hover img{transform:translateY(-4px) rotate(-.4deg);box-shadow:0 2px 3px rgba(0,0,0,.08),0 22px 40px -16px rgba(0,0,0,.32)}
+.glb{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(255,255,255,.96);cursor:zoom-out;padding:4vh 4vw}
+.glb.on{display:flex}
+.glb img{max-width:100%;max-height:100%;box-shadow:0 20px 60px -20px rgba(0,0,0,.4)}
+@media (max-width:900px){ .gwall{column-count:2} }
+@media (max-width:480px){ .gwall{column-gap:12px} .gwall figure{margin-bottom:12px} }
+@media (prefers-reduced-motion:reduce){ .gwall figure{opacity:1;transform:none;transition:none} }
 /* contact */
 .contact{padding-bottom:28px;overflow:hidden}
 /* hanging lucky knot: sways from its loop, tassel lags behind */
@@ -466,6 +478,11 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
       <div class="cascade" id="cascade" aria-live="polite"></div>
     </div>
     <canvas class="tryagain" id="tryagain" aria-hidden="true"></canvas>
+  </section>
+
+  <section class="block gifts" id="gifts" aria-labelledby="gifts-h">
+    <div class="head"><h2 id="gifts-h"><span class="ico sym ico-coin" aria-hidden="true"></span>Gifts</h2></div>
+    <div class="gwall" id="gwall"></div>
   </section>
 
   <section class="block" id="process" aria-labelledby="process-h">
@@ -818,6 +835,18 @@ let glitchKick=()=>{};
   let tm; addEventListener("resize",()=>{ clearTimeout(tm); tm=setTimeout(build,200); });
   /* blue only while this section is on screen; red everywhere else */
   new IntersectionObserver(([en])=>document.documentElement.classList.toggle("blue",en.isIntersecting),{threshold:0,rootMargin:"-56px 0px 0px 0px"}).observe(sec);
+})();
+
+/* ===================== GIFTS ===================== */
+(function(){
+  const wall=$("#gwall"); if(!wall) return;
+  wall.innerHTML=[1,2,3,4,5,6,7,8,9].map(n=>`<figure><img src="assets/gifts/g${n}.webp" alt="Watercolor painting I made for my parents" loading="lazy"></figure>`).join("");
+  const lb=document.createElement("div"); lb.className="glb"; lb.setAttribute("role","dialog"); lb.setAttribute("aria-label","Painting"); lb.innerHTML="<img alt=''>"; document.body.appendChild(lb);
+  const close=()=>lb.classList.remove("on");
+  wall.addEventListener("click",e=>{ const im=e.target.closest("img"); if(!im) return; lb.firstChild.src=im.src; lb.classList.add("on"); });
+  lb.addEventListener("click",close); addEventListener("keydown",e=>{ if(e.key==="Escape") close(); });
+  const io=new IntersectionObserver(es=>es.forEach(en=>{ if(en.isIntersecting){ en.target.classList.add("in"); io.unobserve(en.target); } }),{threshold:.08});
+  wall.querySelectorAll("figure").forEach((f,i)=>{ f.style.transitionDelay=(i%3)*90+"ms"; io.observe(f); });
 })();
 
 /* ===================== FIELD NOTES ===================== */
