@@ -30,7 +30,7 @@
 }
 *{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{background:var(--paper);color:var(--ink);font-family:var(--disp);font-weight:400;font-size:16px;line-height:1.7;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{background:var(--paper) url(assets/paper.webp) 0 0/640px 640px;color:var(--ink);font-family:var(--disp);font-weight:400;font-size:16px;line-height:1.7;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img,video,canvas{display:block;max-width:100%}
 a{color:inherit}
 button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
@@ -61,7 +61,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes blink{50%{opacity:.25}}
 
 /* ---------- hero ---------- */
-.hero{position:relative;height:100svh;min-height:620px;overflow:hidden;touch-action:pan-y;background:var(--paper);cursor:crosshair}
+.hero{position:relative;height:100svh;min-height:620px;overflow:hidden;touch-action:pan-y;background:transparent;cursor:crosshair}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%}
 #bg{z-index:0}
 #ink{z-index:2}
@@ -79,7 +79,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero-foot{position:absolute;z-index:4;left:var(--gut);right:var(--gut);bottom:26px;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:20px;pointer-events:none}
 .hero-foot > *{pointer-events:auto}
 .hero-foot .who{font-size:12px;margin-top:10px;max-width:34ch;color:#333}
-.hero-foot .right{justify-self:end;text-align:right;font-size:12px;background:rgba(255,255,255,.88);padding:8px 10px;margin:-8px -10px}
+.hero-foot .right{justify-self:end;text-align:right;font-size:12px}
 .hero-foot .right p{margin-bottom:6px;color:var(--accent)}
 .hero-foot .tag,.hero-foot .who,.hero-foot .right{text-shadow:0 0 10px #fff,0 0 4px #fff}
 .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);margin-right:8px;vertical-align:1px;animation:ping 2.4s infinite}
@@ -119,6 +119,11 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 
 /* textured images: grayscale + pixel smear at rest, scan into color on engage */
 .tex{position:relative;overflow:hidden;background:var(--fog)}
+/* 委角: inverted (concave) corners from Chinese window and panel frames */
+.wj{--c:clamp(10px,1.4vw,22px);--g:#0000 var(--c),#000 calc(var(--c) + .5px);
+  -webkit-mask:radial-gradient(circle at 0 0,var(--g)) 0 0/51% 51% no-repeat,radial-gradient(circle at 100% 0,var(--g)) 100% 0/51% 51% no-repeat,radial-gradient(circle at 0 100%,var(--g)) 0 100%/51% 51% no-repeat,radial-gradient(circle at 100% 100%,var(--g)) 100% 100%/51% 51% no-repeat;
+  mask:radial-gradient(circle at 0 0,var(--g)) 0 0/51% 51% no-repeat,radial-gradient(circle at 100% 0,var(--g)) 100% 0/51% 51% no-repeat,radial-gradient(circle at 0 100%,var(--g)) 0 100%/51% 51% no-repeat,radial-gradient(circle at 100% 100%,var(--g)) 100% 100%/51% 51% no-repeat}
+.wj.sm{--c:9px}
 .tex img{width:100%;height:100%;object-fit:cover}
 .tex canvas{position:absolute;inset:0;width:100%;height:100%;clip-path:inset(0 0 0 0);transition:clip-path .8s var(--ease)}
 .tex .scan{position:absolute;left:0;right:0;top:0;height:1px;background:var(--accent);opacity:0;pointer-events:none;z-index:2}
@@ -200,7 +205,10 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 /* about */
 .about{display:grid;grid-template-columns:repeat(12,1fr);column-gap:clamp(16px,2vw,28px);max-width:1440px;align-items:start}
 .portrait{grid-column:1/span 4}
-.portrait .tex{aspect-ratio:3/4}
+.portrait .gate{position:relative;padding:12px;border-radius:50%;border:1px solid var(--ink)}
+.portrait .gate::after{content:"";position:absolute;left:50%;bottom:-1px;width:38%;height:1px;transform:translateX(-50%);background:var(--paper)}
+.portrait .tex{aspect-ratio:1/1;border-radius:50%}
+.portrait .tex img{object-position:50% 22%}
 .portrait figcaption{display:flex;justify-content:space-between;font-size:11px;color:var(--mute);margin-top:8px}
 .bio{grid-column:6/span 6}
 .bio p{font-size:clamp(14.5px,1.15vw,16px);line-height:1.75;margin-bottom:1.1em;max-width:62ch}
@@ -216,26 +224,23 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 /* contact */
 .contact{padding-bottom:28px;overflow:hidden}
 /* hanging lucky knot: sways from its loop, tassel lags behind */
-.hang{position:absolute;right:calc(var(--gut) + 3vw);top:calc(clamp(96px,12vw,170px) - 70px);width:clamp(130px,14vw,210px);aspect-ratio:160/250;color:var(--accent);transform-origin:50% 4%;clip-path:inset(0 0 100% 0);transition:clip-path 1.8s var(--ease);pointer-events:none}
-.hang.in{clip-path:inset(-5% -20% -5% -20%);animation:sway 7s ease-in-out 1.8s infinite}
-.hang span{position:absolute;inset:0;background:currentColor;-webkit-mask:var(--m) center/100% 100% no-repeat;mask:var(--m) center/100% 100% no-repeat}
-.hang .k-top{--m:url(assets/sym/knot-top.webp)}
-.hang .k-tails{--m:url(assets/sym/knot-tails.webp);transform-origin:50% 74.7%;animation:sway 7s ease-in-out 2.3s infinite}
+.hang{position:absolute;right:0;top:0;width:min(440px,40vw);height:100%;pointer-events:none;z-index:2}
 @keyframes sway{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(2.2deg)}}
 .head .sym{width:.8em;height:.8em;margin-right:.35em;vertical-align:-.04em;color:var(--accent)}
 .mail{display:block;font-family:var(--disp);font-size:clamp(22px,5vw,80px);letter-spacing:-.05em;line-height:1.1;text-decoration:none;word-break:break-word;max-width:1440px;transition:color .25s}
 .mail:hover{color:var(--accent)}
 .contact-row{display:flex;gap:28px;flex-wrap:wrap;align-items:center;margin-top:32px}
 .copy-msg{color:var(--accent);font-size:12px;min-width:6ch}
-footer{display:flex;justify-content:space-between;align-items:center;gap:16px;border-top:1px solid var(--line);margin-top:clamp(80px,10vw,140px);padding-top:18px;font-size:11px;color:var(--mute)}
+footer{position:relative;display:flex;justify-content:space-between;align-items:center;gap:16px;border-top:0;margin-top:clamp(80px,10vw,140px);padding-top:18px;font-size:11px;color:var(--mute)}
 footer .namesvg{height:20px}
 
+footer::before{content:"";position:absolute;left:0;right:0;top:-12px;height:12px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='12' viewBox='0 0 24 12'%3E%3Cpath d='M0 11.5H5.5V3.5H10.5V8.5H8V6M12 .5V11.5H17.5V3.5H22.5V8.5H20V6' fill='none' stroke='%23111' stroke-width='1'/%3E%3C/svg%3E") 0 0/24px 12px repeat-x;opacity:.45}
 /* drawer */
 dialog.drawer{margin:0 0 0 auto;height:100%;max-height:100%;width:min(640px,100%);max-width:100%;border:0;border-left:1px solid var(--ink);background:var(--paper);color:var(--ink);padding:0;overflow:auto;overscroll-behavior:contain}
 dialog.drawer::backdrop{background:rgba(255,255,255,.7);backdrop-filter:blur(4px) grayscale(1)}
 dialog.drawer[open]{animation:slide .5s var(--ease)}
 @keyframes slide{from{transform:translateX(40px);opacity:0}}
-.d-top{position:sticky;top:0;background:var(--ink);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:8px 20px;z-index:2;font-size:11px}
+.d-top{position:sticky;top:0;background:var(--ink) ;box-shadow:0 12px 0 -1px var(--paper);color:#fff;display:flex;justify-content:space-between;align-items:center;padding:8px 20px;z-index:2;font-size:11px}
 .d-close{border:1px solid #fff;border-radius:999px;padding:4px 12px}
 .d-close:hover{background:var(--accent);border-color:var(--accent)}
 .d-body{padding:26px 24px 48px}
@@ -252,8 +257,9 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   .nav{justify-self:end;gap:18px}
   .clocks{display:none}
   .hint,.fine{display:none}
-  .hang{width:104px;top:40px;right:var(--gut)}
-  .contact .head h2{padding-right:110px}
+  .hang{width:42vw}
+  .contact .head h2{padding-right:30vw}
+  .mail{font-size:6.4vw;word-break:normal;white-space:nowrap}
   .art{top:4%;right:-62%;height:96%;opacity:.6}
   .hero-foot{grid-template-columns:1fr;gap:14px;bottom:22px}
   .hero-foot .right{justify-self:start;text-align:left;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
@@ -350,15 +356,15 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
     <div class="head"><h2 id="process-h"><span class="ico sym ico-knot" aria-hidden="true"></span>How I work</h2><span class="meta">Three steps</span></div>
     <p class="lede">I watch how people behave in a space, not how they say they do, then find the habit a design could change.</p>
     <ol class="steps">
-      <li><img class="proc" src="assets/art/observe.webp" alt="" loading="lazy">
+      <li><img class="proc wj" src="assets/art/observe.webp" alt="" loading="lazy">
         <span class="ix">Step 1</span><h3>Observe</h3>
         <p>Fieldwork in real places: notes, photos and the workarounds people make for themselves.</p>
         <p class="see">See <button type="button" data-open="Constructing Campus Identity">Constructing Campus Identity</button></p></li>
-      <li><img class="proc" src="assets/art/decode.webp" alt="" loading="lazy">
+      <li><img class="proc wj" src="assets/art/decode.webp" alt="" loading="lazy">
         <span class="ix">Step 2</span><h3>Decode</h3>
         <p>Working out why the irrational choice keeps winning. That’s where the economics comes in.</p>
         <p class="see">See <button type="button" data-open="Dead Vapes Society: Exhale">Exhale</button></p></li>
-      <li><img class="proc" src="assets/art/build.webp" alt="" loading="lazy">
+      <li><img class="proc wj" src="assets/art/build.webp" alt="" loading="lazy">
         <span class="ix">Step 3</span><h3>Build</h3>
         <p>Making it in whatever medium fits, from a Figma flow to a printed zine to a working site, starting rough.</p>
         <p class="see">See <button type="button" data-open="My aKDPHI Guides">My aKDPHI Guides</button></p></li>
@@ -370,7 +376,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
     <div class="head"><h2 id="about-h">About</h2><span class="meta">Bay Area</span></div>
     <div class="about">
       <figure class="portrait">
-        <div class="tex" data-tex><img src="assets/china/me_blue_dress.jpg" alt="Caroline crouching by a storefront at night, holding a clear umbrella" loading="lazy"><span class="scan"></span></div>
+        <div class="gate"><div class="tex" data-tex><img src="assets/china/me_blue_dress.jpg" alt="Caroline crouching by a storefront at night, holding a clear umbrella" loading="lazy"><span class="scan"></span></div></div>
         <figcaption><span>Caroline Chen</span></figcaption>
       </figure>
       <div class="bio">
@@ -392,7 +398,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   </section>
 
   <section class="block contact" id="contact" aria-labelledby="contact-h">
-    <div class="hang" id="hang" aria-hidden="true"><span class="k-top"></span><span class="k-tails"></span></div>
+    <canvas class="hang" id="hang" aria-hidden="true"></canvas>
     <div class="head"><h2 id="contact-h">We can build something together.</h2></div>
     <a class="mail" href="mailto:carolineche99@gmail.com">carolineche99@gmail.com</a>
     <div class="contact-row">
@@ -408,7 +414,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   </section>
 </main>
 
-<div class="peek" id="peek" aria-hidden="true"><img alt=""><span></span></div>
+<div class="peek" id="peek" aria-hidden="true"><img class="wj sm" alt=""><span></span></div>
 
 <dialog class="drawer" id="drawer" aria-labelledby="d-title">
   <div class="d-top"><span id="d-num"></span><button class="d-close" type="button" id="d-close">Close</button></div>
@@ -514,7 +520,7 @@ function rng(seed){ let s=seed>>>0||1; return ()=>((s=Math.imul(s^s>>>15,1|s)+0x
 })();
 
 /* ===================== TEXTURED IMAGES ===================== */
-const texHTML=(src,alt)=>`<div class="tex" data-tex><img src="${src}" alt="${esc(alt)}" loading="lazy"><span class="scan"></span></div>`;
+const texHTML=(src,alt,cls="wj")=>`<div class="tex ${cls}" data-tex><img src="${src}" alt="${esc(alt)}" loading="lazy"><span class="scan"></span></div>`;
 function texify(el){
   const img=$("img",el); if(!img||el.dataset.done) return; el.dataset.done=1;
   const go=()=>{
@@ -592,7 +598,7 @@ if(fine){
 /* ===================== LAB ===================== */
 $("#labgrid").innerHTML=PROJECTS.filter(p=>p.lab).map(p=>`
   <figure class="clip">
-    <div class="vid" tabindex="0" role="button" aria-label="Play ${esc(p.title)}">
+    <div class="vid wj" tabindex="0" role="button" aria-label="Play ${esc(p.title)}">
       <video src="${p.video}" muted loop playsinline preload="none" aria-hidden="true"></video>
       <img src="${p.thumb}" alt="${esc(p.title)} still frame" loading="lazy">
       <span class="state"><i></i><b>Paused</b></span>
@@ -610,7 +616,7 @@ document.querySelectorAll(".clip").forEach(c=>{
 });
 
 /* ===================== FIELD NOTES ===================== */
-$("#field").innerHTML=FIELD.map(([f,c])=>`<figure>${texHTML(`assets/china/thumbs/${f}.jpg`,c)}<figcaption>${c}</figcaption></figure>`).join("");
+$("#field").innerHTML=FIELD.map(([f,c])=>`<figure>${texHTML(`assets/china/thumbs/${f}.jpg`,c,"wj sm")}<figcaption>${c}</figcaption></figure>`).join("");
 
 /* texture all images lazily, bind engagement */
 (function(){
@@ -649,7 +655,79 @@ $("#field").innerHTML=FIELD.map(([f,c])=>`<figure>${texHTML(`assets/china/thumbs
   });
 })();
 
-new IntersectionObserver(([en],o)=>{ if(en.isIntersecting){ $("#hang").classList.add("in"); o.disconnect(); } },{threshold:.25}).observe($("#contact"));
+
+/* ===================== LUCKY KNOT: cord + tassel on rope physics ===================== */
+(function(){
+  const cv=$("#hang"), sec=$("#contact"), g=cv.getContext("2d");
+  const body=new Image(); body.src="assets/sym/knot-body.webp";
+  const IMG_W=600, IMG_H=560, TOP=12.5, BEAD=542;
+  let W=0,H=0,D=1,K=0,ax=0,rope=[],knot=null,strands=[],tinted=null,running=false,dropped=false,raf=0;
+  let lastScroll=scrollY, mx=-1e4, my=-1e4, pmx=-1e4, pmy=-1e4, t0=performance.now();
+  const ACC=getComputedStyle(document.documentElement).getPropertyValue("--accent").trim()||"#8f1c16";
+  const P=(x,y)=>({x,y,px:x,py:y});
+  function tint(){ tinted=document.createElement("canvas"); tinted.width=IMG_W; tinted.height=IMG_H; const t=tinted.getContext("2d"); t.drawImage(body,0,0,IMG_W,IMG_H); t.globalCompositeOperation="source-in"; t.fillStyle=ACC; t.fillRect(0,0,IMG_W,IMG_H); }
+  function build(){
+    D=Math.min(2,devicePixelRatio||1); W=cv.clientWidth; H=cv.clientHeight; cv.width=W*D; cv.height=H*D;
+    K=Math.min(250,W*.6,innerWidth*(innerWidth<700?.2:.3)); ax=W*(innerWidth<700?.7:.52);
+    const ropeLen=Math.max(70,Math.min(220,H*.2)), n=12, kl=K*(BEAD-TOP)/IMG_W, tl=Math.min(320,H*.34);
+    const y0=dropped?0:-ropeLen*.6;               // starts above the section, drops in when seen
+    rope=[...Array(n)].map((_,i)=>P(ax+(dropped?0:i*4),y0+ropeLen*i/(n-1))); rope.seg=ropeLen/(n-1);
+    knot={a:rope[n-1],b:P(ax,y0+ropeLen+kl),len:kl};
+    strands=[...Array(30)].map((_,i)=>{ const off=(i/29-.5)*K*.11, L=tl*(.82+.3*Math.random()), m=8;
+      const pts=[...Array(m)].map((_,k)=>P(ax+off,knot.b.y+L*k/(m-1))); pts.seg=L/(m-1); pts.off=off; pts.w=.7+Math.random()*1.1; pts.al=.55+Math.random()*.45; return pts; });
+  }
+  function step(now){
+    const sd=Math.max(-30,Math.min(30,scrollY-lastScroll)); lastScroll=scrollY;
+    const wind=Math.sin(now*.0007)*.025+Math.sin(now*.0019)*.012;
+    const mvx=(mx-pmx)*.18, mvy=(my-pmy)*.18; pmx=mx; pmy=my;
+    const all=[...rope.slice(1),knot.b,...strands.flatMap(s=>s.slice(1))];
+    for(const p of all){
+      let vx=(p.x-p.px)*.955, vy=(p.y-p.py)*.955;
+      vx+=wind - sd*.006*(p.y/H+.2); vy+=.5;
+      const dx=p.x-mx, dy=p.y-my, dd=Math.hypot(dx,dy);
+      if(dd<70){ const f=(1-dd/70); vx+=Math.max(-6,Math.min(6,mvx))*f+dx/dd*f*.4; vy+=Math.max(-4,Math.min(4,mvy))*f*.3; }
+      p.px=p.x; p.py=p.y; p.x+=vx; p.y+=vy;
+    }
+    for(let it=0;it<8;it++){
+      rope[0].x=ax; rope[0].y=0;
+      for(let i=1;i<rope.length;i++) link(rope[i-1],rope[i],rope.seg,i===1?0:.5);
+      link(knot.a,knot.b,knot.len,.25);
+      const ang=Math.atan2(knot.b.y-knot.a.y,knot.b.x-knot.a.x)-Math.PI/2, c=Math.cos(ang), s=Math.sin(ang);
+      for(const st of strands){ st[0].x=knot.b.x+st.off*c; st[0].y=knot.b.y+st.off*s+K*.02; for(let k=1;k<st.length;k++) link(st[k-1],st[k],st.seg,0); }
+    }
+  }
+  function link(a,b,len,wa){ const dx=b.x-a.x, dy=b.y-a.y, d=Math.hypot(dx,dy)||1e-6, diff=(d-len)/d; a.x+=dx*diff*wa; a.y+=dy*diff*wa; b.x-=dx*diff*(1-wa); b.y-=dy*diff*(1-wa); }
+  function curve(pts){ g.beginPath(); g.moveTo(pts[0].x,pts[0].y); for(let i=1;i<pts.length-1;i++){ const mx2=(pts[i].x+pts[i+1].x)/2, my2=(pts[i].y+pts[i+1].y)/2; g.quadraticCurveTo(pts[i].x,pts[i].y,mx2,my2); } const l=pts[pts.length-1]; g.lineTo(l.x,l.y); }
+  function draw(){
+    g.setTransform(D,0,0,D,0,0); g.clearRect(0,0,W,H);
+    // tassel threads behind the knot
+    for(const st of strands){ g.strokeStyle=ACC; g.globalAlpha=st.al; g.lineWidth=st.w; g.lineCap="round"; curve(st); g.stroke(); }
+    g.globalAlpha=1;
+    // twisted cord: solid core with diagonal twist marks along it
+    g.strokeStyle=ACC; g.lineWidth=Math.max(4,K*.026); g.lineCap="round"; curve(rope); g.stroke();
+    g.strokeStyle="rgba(255,255,255,.42)"; g.lineWidth=1.1;
+    for(let i=1;i<rope.length;i++){ const a=rope[i-1], b=rope[i], len=Math.hypot(b.x-a.x,b.y-a.y), ux=(b.x-a.x)/len, uy=(b.y-a.y)/len, w=Math.max(4,K*.026)*.5;
+      for(let t=0;t<len;t+=w*1.7){ const x=a.x+ux*t, y=a.y+uy*t; g.beginPath(); g.moveTo(x-uy*w-ux*w*.8,y+ux*w-uy*w*.8); g.lineTo(x+uy*w+ux*w*.8,y-ux*w+uy*w*.8); g.stroke(); } }
+    // painted knot, hanging at the angle the cord pulls it
+    if(tinted){ const ang=Math.atan2(knot.b.y-knot.a.y,knot.b.x-knot.a.x)-Math.PI/2, sc=K/IMG_W;
+      g.save(); g.translate(knot.a.x,knot.a.y); g.rotate(ang); g.drawImage(tinted,-K/2,-TOP*sc,K,IMG_H*sc); g.restore(); }
+    // binding where the threads gather
+    const ang=Math.atan2(knot.b.y-knot.a.y,knot.b.x-knot.a.x)-Math.PI/2;
+    g.save(); g.translate(knot.b.x,knot.b.y); g.rotate(ang); g.fillStyle=ACC; g.fillRect(-K*.075,K*.03,K*.15,K*.07);
+    g.fillStyle="rgba(255,255,255,.35)"; for(let k=0;k<3;k++) g.fillRect(-K*.075,K*(.045+k*.018),K*.15,1);
+    g.restore();
+  }
+  function loop(now){ step(now); draw(); if(running) raf=requestAnimationFrame(loop); }
+  addEventListener("pointermove",e=>{ const b=cv.getBoundingClientRect(); mx=e.clientX-b.left; my=e.clientY-b.top; },{passive:true});
+  let rT; addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ build(); if(reduce){ settle(); } },150); });
+  function settle(){ for(let i=0;i<500;i++) step(t0); draw(); }
+  body.decode().catch(()=>{}).then(()=>{ tint(); build();
+    new IntersectionObserver(([en])=>{
+      if(en.isIntersecting){ if(!dropped){ dropped=true; } if(reduce){ build(); settle(); return; } if(!running){ running=true; raf=requestAnimationFrame(loop); } }
+      else { running=false; cancelAnimationFrame(raf); }
+    },{threshold:.15}).observe(sec);
+  });
+})();
 
 /* ===================== DRAWER ===================== */
 const drawer=$("#drawer"),dBody=$("#d-body"),dNum=$("#d-num");
@@ -658,7 +736,7 @@ function openProject(title){
   const p=PROJECTS[i];
   dNum.textContent=`Project ${String(i+1).padStart(2,"0")} of ${PROJECTS.length}`;
   const media=p.video?`<video src="${p.video}" poster="${p.thumb}" controls muted loop playsinline></video>`
-    :(p.galleryOnly?p.gallery:[p.thumb,...(p.gallery||[])]).map(s=>`<img src="${s}" alt="${esc(p.title)}" loading="lazy">`).join("");
+    :(p.galleryOnly?p.gallery:[p.thumb,...(p.gallery||[])]).map(s=>`<img class="wj" src="${s}" alt="${esc(p.title)}" loading="lazy">`).join("");
   const blank=/^https?:|\.(pdf|html)$/.test(p.url);
   dBody.innerHTML=`
     <h2 id="d-title">${esc(p.title)}</h2>
