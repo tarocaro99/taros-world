@@ -72,15 +72,13 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .hero.scan .art img:nth-child(2){transition-delay:.5s}
 .hero.scan .art img:nth-child(3){transition-delay:1s}
 .art .specks{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.6s 3.2s}
-.hero.scan .art .specks{opacity:1}
+.hero.scan .art .specks{opacity:.35}
 .art .scanline{display:none}
 
 
 /* ---------- depth: ink-wash mist, giant cropped glyphs, the seal ---------- */
 .hero .mist{position:absolute;left:0;right:0;bottom:0;height:46%;z-index:0;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 3.4s ease .3s}
-.hero.scan .mist{opacity:.5}
-.hero .sun{position:absolute;left:44vw;bottom:15%;width:clamp(70px,9vw,150px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 42% 38%,#b3261e,#8f1c16 70%);opacity:0;transform:translateY(40px);z-index:0;pointer-events:none;transition:opacity 2.6s ease 1.2s,transform 4s cubic-bezier(.2,.7,.2,1) 1.2s}
-.hero.scan .sun{opacity:.75;transform:none}
+.hero.scan .mist{opacity:.38}
 .art{mix-blend-mode:multiply}
 .hero .mist canvas{inset:auto;left:-15%;bottom:0;width:130%;max-width:none;height:100%;will-change:transform}
 section.block{isolation:isolate}
@@ -415,7 +413,6 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
 <main id="top">
   <section class="hero" id="hero" aria-label="Caroline Chen, designer">
     <h1 class="skip" style="left:-999px">Caroline Chen, designer</h1>
-    <div class="sun" aria-hidden="true"></div>
     <div class="mist" id="mist" aria-hidden="true"></div>
     <canvas id="bg" aria-hidden="true"></canvas>
     <div class="art" id="art" aria-hidden="true">
@@ -1333,7 +1330,7 @@ $("#copy").addEventListener("click",async()=>{
       for(let i=0;i<7;i++){ const y=top+r()*(Hc-top)*.8, h=6+r()*26; g.globalAlpha=.1+r()*.22; const gg=g.createLinearGradient(0,y-h,0,y+h); gg.addColorStop(0,"rgba(0,0,0,0)"); gg.addColorStop(.5,"rgba(0,0,0,1)"); gg.addColorStop(1,"rgba(0,0,0,0)"); g.fillStyle=gg; g.fillRect(r()*Wc*.4-40,y-h,Wc*(.3+r()*.6),h*2); }
       g.globalAlpha=1; g.globalCompositeOperation="source-over";
       // a few ink dots clinging to the nearer ridges
-      if(k>=2){ g.fillStyle="#111"; for(let i=0;i<70+k*30;i++){ const xi=Math.floor(r()*Wc/3), y=ys[xi]; if(y==null) continue; g.globalAlpha=.1+r()*.35; g.beginPath(); g.arc(xi*3+(r()-.5)*6,y+r()*Hc*.06,.6+r()*1.5,0,6.283); g.fill(); } g.globalAlpha=1; }
+      if(false){ g.fillStyle="#111"; for(let i=0;i<70+k*30;i++){ const xi=Math.floor(r()*Wc/3), y=ys[xi]; if(y==null) continue; g.globalAlpha=.1+r()*.35; g.beginPath(); g.arc(xi*3+(r()-.5)*6,y+r()*Hc*.06,.6+r()*1.5,0,6.283); g.fill(); } g.globalAlpha=1; }
       box.appendChild(c); L.push(c);
     }
     place(performance.now());
