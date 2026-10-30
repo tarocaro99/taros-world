@@ -37,7 +37,7 @@
 /* royal blue only ever lives in the Fail-Safe section: while it is on screen, the whole page swaps accent */
 html.blue{--accent:var(--blue)}
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+html{overflow-x:clip;scroll-behavior:smooth;-webkit-text-size-adjust:100%}
 body{background:#fff;color:var(--ink);font-family:var(--disp);font-weight:400;font-size:18px;line-height:1.6;letter-spacing:0;-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img,video,canvas{display:block;max-width:100%}
 a{color:inherit}
@@ -74,6 +74,35 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 .art .specks{position:absolute;inset:0;width:100%;height:100%;opacity:0;transition:opacity 1.6s 3.2s}
 .hero.scan .art .specks{opacity:1}
 .art .scanline{display:none}
+
+
+/* ---------- depth: ink-wash mist, giant cropped glyphs, the seal ---------- */
+.hero .mist{position:absolute;left:0;right:0;bottom:0;height:46%;z-index:0;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 3.4s ease .3s}
+.hero.scan .mist{opacity:1}
+.art{mix-blend-mode:multiply}
+.hero .mist canvas{inset:auto;left:-15%;bottom:0;width:130%;max-width:none;height:100%;will-change:transform}
+section.block{isolation:isolate}
+.gl{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:-1}
+.gl svg{position:absolute;height:min(86vh,820px);width:auto;fill:#111;opacity:var(--go,.07);will-change:transform,filter;transform:translate3d(0,var(--gy,0px),0);filter:blur(var(--gb,0px))}
+#work .gl svg{top:1%;right:-11vw;--go:.075}
+#about .gl svg{right:-12vw;top:20%;--go:.06}
+#contact .gl{bottom:0}
+#contact .gl svg{fill:#111;--go:1;height:80%;top:3%;left:22vw}
+.contact{background:#fff}
+@supports (mix-blend-mode:difference){
+  .contact .head h2,.contact .mail,.contact-row{color:#fff;mix-blend-mode:difference}
+  .contact-row .btn{color:#fff}
+  .contact .mail:hover{color:#fff;text-decoration:underline;text-underline-offset:.1em;text-decoration-thickness:2px}
+}
+.seal{position:absolute;z-index:5;width:var(--ss,64px);height:var(--ss,64px);color:#8f1c16;opacity:0;transform:rotate(-5deg) scale(1.6);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.hero.stamp .seal{animation:press .6s cubic-bezier(.2,.8,.2,1) forwards}
+.hero.restamp .seal{animation:press2 .6s cubic-bezier(.2,.8,.2,1) forwards}
+@keyframes press{0%{opacity:0;transform:rotate(-13deg) scale(1.75)}55%{opacity:1;transform:rotate(-5deg) scale(.92)}100%{opacity:1;transform:rotate(-5deg) scale(1)}}
+@keyframes press2{0%{opacity:1;transform:rotate(-9deg) scale(1.5)}55%{opacity:1;transform:rotate(-5deg) scale(.92)}100%{opacity:1;transform:rotate(-5deg) scale(1)}}
+.seal.static{position:relative;opacity:1;transform:rotate(-5deg);width:44px;height:44px;display:inline-block;vertical-align:middle;margin-right:14px;cursor:default;animation:none}
+.uln{position:relative;display:inline-block}
+.uln::after{content:"";position:absolute;left:-3px;right:-14px;bottom:-9px;height:11px;background:var(--accent);-webkit-mask:url(assets/sym/under-1.webp) left center/100% 100% no-repeat;mask:url(assets/sym/under-1.webp) left center/100% 100% no-repeat;clip-path:inset(0 100% 0 0);transition:clip-path 1.2s var(--ease) 1.5s}
+.hero.done .uln::after{clip-path:inset(0 0 0 0)}
 
 /* opening: a cursor clicks, the name types itself, the page dissolves in */
 #intro{display:none}
@@ -272,8 +301,13 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .bio dl{display:grid;grid-template-columns:150px 1fr;gap:8px 18px;border-top:1px solid var(--line);padding-top:22px;margin-top:30px;font-size:14px}
 .bio dt{color:var(--mute);font-family:var(--sc);letter-spacing:.03em}
 .field{margin-top:clamp(64px,8vw,110px);max-width:1440px}
-.field-strip{display:grid;grid-template-columns:repeat(6,1fr);gap:clamp(10px,1.4vw,20px)}
-.field figure{min-width:0}
+.field-strip{display:flex;align-items:flex-start;padding:26px 0 44px}
+.field figure{position:relative;flex:1 1 0;min-width:0;margin-left:-1.6%;transform:translateY(var(--y,0px)) rotate(var(--r,0deg));transition:transform .5s var(--ease);filter:drop-shadow(0 8px 14px rgba(0,0,0,.13))}
+.field figure:first-child{margin-left:0}
+.field figure:not(:first-child) figcaption{padding-left:22px}
+.field figure::before{content:"";position:absolute;z-index:3;top:-6px;left:calc(50% + var(--px,0px));width:11px;height:11px;border-radius:50%;background:#8f1c16}
+.field figure:hover{z-index:5;transform:translateY(calc(var(--y,0px) - 12px)) rotate(0deg) scale(1.05)}
+
 .field .tex{aspect-ratio:3/4}
 .field figcaption{font-size:14px;line-height:1.3;font-style:italic;color:var(--mute);margin-top:8px}
 .field h3{font-family:var(--disp);font-weight:400;font-size:15px;margin-bottom:16px}
@@ -323,7 +357,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   .mail{font-size:6.4vw;word-break:normal;white-space:nowrap}
   .art{top:4%;right:-24%;height:92%;opacity:.55}
   .hero-foot .who,.hero-foot .tag{max-width:calc(100vw - 2*var(--gut) - 64px)}
-  .field-strip{grid-template-columns:repeat(3,1fr)}
+  .field-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:30px 16px}.field figure{margin-left:0}
   .hero-foot{grid-template-columns:1fr;gap:14px;bottom:22px}
   .hero-foot .right{justify-self:start;text-align:left;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
   .hero-foot .right p{margin:0}
@@ -369,6 +403,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
     <a href="#work">Work</a><a href="#failsafe">Fail-Safe</a><a href="#about">About</a><a href="#contact">Contact</a>
   </nav>
 </header>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs id="sd"></defs></svg>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs>
 <filter id="blueprint" color-interpolation-filters="sRGB"><feComponentTransfer><feFuncR type="gamma" amplitude="1.25" exponent=".7"/><feFuncG type="gamma" amplitude="1.25" exponent=".7"/><feFuncB type="gamma" amplitude="1.25" exponent=".7"/></feComponentTransfer><feColorMatrix type="matrix" values="-0.260 -0.512 -0.095 0 1  -0.236 -0.465 -0.087 0 1  -0.064 -0.125 -0.023 0 1  0 0 0 1 0"/></filter>
 <symbol id="warn" viewBox="0 0 13 12" shape-rendering="crispEdges"><path fill="currentColor" d="M6 0h1v1h1v2h1v2h1v2h1v2h1v2h1v1H0v-1h1V9h1V7h1V5h1V3h1V1h1zM6 4v4h1V4zM6 9v1h1V9z"/></symbol><symbol id="vert" viewBox="0 0 26 14" shape-rendering="crispEdges"><path d="M8 0h10v2H8zM0 2h4v2H0zM6 2h14v2H6zM22 2h4v2h-4zM0 4h26v2H0zM6 6h14v2H6zM8 8h4v2H8zM14 8h4v2h-4zM10 10h6v2h-6zM12 12h2v2h-2z"/></symbol></defs></svg>
@@ -383,6 +418,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
 <main id="top">
   <section class="hero" id="hero" aria-label="Caroline Chen, designer">
     <h1 class="skip" style="left:-999px">Caroline Chen, designer</h1>
+    <div class="mist" id="mist" aria-hidden="true"></div>
     <canvas id="bg" aria-hidden="true"></canvas>
     <div class="art" id="art" aria-hidden="true">
       <img src="assets/art/art-back.webp" alt="" decoding="async">
@@ -393,10 +429,11 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
     </div>
     <canvas id="ink" aria-hidden="true"></canvas>
     <canvas id="marks" aria-hidden="true"></canvas>
+    <svg class="seal" id="seal" viewBox="0 0 100 100" role="button" aria-label="Stamp again" tabindex="0"><use href="#sealg" filter="url(#stampfx)"/></svg>
 
     <a class="avail" href="#contact"><span class="vs" aria-hidden="true"></span><span class="t">Open to full-time design roles</span></a>
     <div class="hero-foot">
-      <div><p class="tag">Watch people.<br>Then build.</p><p class="who">Caroline Chen, a designer across UX, brand, print and motion, trained in design and economics.</p></div>
+      <div><p class="tag">Watch people.<br><span class="uln">Then build.</span></p><p class="who">Caroline Chen, a designer across UX, brand, print and motion, trained in design and economics.</p></div>
       <dl class="spec"><dt>System motivator</dt><dd>Absurd optimism</dd><dt>Recovery mode</dt><dd>Fail-safe</dd></dl>
       
       
@@ -489,7 +526,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
     </div>
     <footer>
       <a class="logo" href="#top" aria-label="Back to top"><svg class="namesvg" viewBox="40 0 2800 1000" aria-hidden="true"><g transform="translate(0 900) scale(1 -1)"><path d="M 225 663 Q 267 670 310 690 Q 326 700 336 690 Q 342 684 333 667 Q 317 630 304 591 Q 291 567 305 548 Q 354 470 341 454 Q 337 444 313 445 Q 285 446 256 444 Q 231 443 260 431 Q 312 407 359 377 Q 372 365 384 377 Q 397 386 404 408 Q 416 459 359 533 Q 326 575 340 595 Q 388 671 414 689 Q 433 702 424 716 Q 411 734 372 753 Q 351 762 336 749 Q 279 706 204 693 C 175 687 196 657 225 663 Z"/><path d="M 204 693 Q 165 718 146 711 Q 137 705 144 691 Q 171 600 173 589 Q 173 579 174 564 Q 193 282 153 119 Q 138 56 179 6 Q 192 -10 204 5 Q 225 36 221 160 Q 222 611 224 640 Q 225 655 225 663 C 226 681 226 681 204 693 Z"/><path d="M 592 554 Q 682 573 777 590 Q 834 603 842 611 Q 852 618 847 628 Q 840 640 810 648 Q 779 655 748 643 Q 684 621 613 603 Q 610 603 609 602 L 563 593 Q 503 584 442 578 Q 405 572 431 554 Q 476 530 533 542 Q 539 543 548 545 L 592 554 Z"/><path d="M 691 347 Q 758 354 805 358 Q 845 359 848 371 Q 849 384 820 403 Q 799 415 694 393 L 639 382 Q 596 376 546 368 Q 525 365 524 370 Q 523 374 530 391 Q 554 452 592 554 L 609 602 Q 646 716 675 742 Q 691 757 681 767 Q 627 815 603 810 Q 593 809 600 789 Q 612 743 563 593 L 548 545 Q 500 415 457 376 Q 436 358 452 310 Q 458 295 475 302 Q 545 329 640 340 L 691 347 Z"/><path d="M 694 393 Q 697 412 703 427 Q 712 446 695 459 Q 670 481 640 490 Q 621 497 613 489 Q 607 482 618 467 Q 637 434 639 382 L 640 340 Q 644 108 625 92 Q 616 85 602 90 Q 563 99 526 107 Q 514 110 515 102 Q 516 95 527 88 Q 605 25 634 -14 Q 649 -30 664 -16 Q 697 14 697 102 Q 694 153 691 347 L 694 393 Z"/><path d="M 482 248 Q 451 200 410 160 Q 386 133 395 95 Q 399 76 422 84 Q 477 111 497 186 Q 507 217 506 243 Q 502 253 497 255 Q 488 255 482 248 Z"/><path d="M 762 239 Q 811 185 867 108 Q 880 86 896 79 Q 905 78 913 86 Q 926 99 919 144 Q 913 193 767 271 Q 758 277 755 264 Q 754 251 762 239 Z"/></g><g transform="translate(930 900) scale(1 -1)"><path d="M 311 666 Q 360 753 386 774 Q 395 784 391 799 Q 387 812 358 836 Q 330 855 311 855 Q 292 854 300 830 Q 315 799 302 771 Q 235 612 71 423 Q 61 413 58 407 Q 55 395 69 398 Q 129 407 290 636 L 311 666 Z"/><path d="M 290 636 Q 323 629 413 650 Q 426 654 444 658 Q 462 664 465 666 Q 472 673 468 682 Q 461 692 433 696 Q 409 699 341 674 Q 326 671 311 666 C 282 657 260 641 290 636 Z"/><path d="M 314 496 Q 313 497 315 497 Q 417 527 422 530 Q 429 539 424 546 Q 417 556 389 560 Q 361 561 335 549 Q 313 539 290 532 Q 265 525 233 519 Q 200 510 225 497 Q 243 488 268 488 C 293 487 293 487 314 496 Z"/><path d="M 343 363 Q 368 373 397 380 Q 431 390 437 397 Q 444 404 440 413 Q 433 423 403 428 Q 375 432 346 418 Q 343 417 343 416 L 293 396 Q 179 366 158 361 Q 124 352 150 338 Q 186 323 255 339 Q 273 345 295 350 L 343 363 Z"/><path d="M 295 350 Q 298 208 255 144 Q 224 117 264 69 Q 267 66 271 62 Q 284 55 296 72 Q 308 100 431 223 Q 449 236 453 246 Q 456 256 446 255 Q 440 255 341 195 Q 337 191 334 196 Q 341 287 343 363 L 343 416 Q 344 435 348 450 Q 352 463 343 475 Q 328 488 314 496 C 289 512 257 516 268 488 Q 287 446 293 396 L 295 350 Z"/><path d="M 598 666 Q 634 706 690 775 Q 703 796 723 811 Q 741 826 726 840 Q 710 853 681 860 Q 654 867 643 861 Q 631 857 639 844 Q 648 822 596 706 Q 586 685 575 662 Q 574 662 574 661 C 560 635 578 644 598 666 Z"/><path d="M 562 659 Q 552 666 523 674 Q 513 678 509 674 Q 502 670 509 654 Q 531 590 536 488 Q 536 457 551 436 Q 564 414 570 428 Q 574 438 576 451 L 578 472 Q 578 473 573 545 L 571 566 Q 568 609 568 628 C 568 656 568 656 562 659 Z"/><path d="M 740 474 Q 755 452 769 446 Q 779 439 793 458 Q 805 477 831 587 Q 838 615 860 639 Q 872 649 862 663 Q 847 678 809 702 Q 794 709 728 694 Q 724 694 720 692 Q 615 674 598 666 L 574 661 Q 568 661 562 659 C 532 654 540 616 568 628 Q 577 638 742 664 Q 764 668 773 660 Q 783 647 782 635 Q 764 530 756 514 Q 752 504 738 500 Q 734 500 735 499 C 724 494 724 494 740 474 Z"/><path d="M 573 545 Q 600 541 691 560 Q 695 561 701 562 Q 717 566 720 568 Q 726 574 722 580 Q 718 587 697 592 Q 684 595 616 574 Q 595 570 571 566 C 541 561 543 548 573 545 Z"/><path d="M 672 463 Q 708 470 740 474 C 770 478 764 491 735 499 Q 731 500 725 502 Q 704 505 578 472 C 549 464 546 454 576 451 Q 582 450 591 451 Q 606 454 623 456 L 672 463 Z"/><path d="M 534 350 Q 513 371 484 367 Q 474 363 478 354 Q 506 300 486 200 Q 465 161 495 121 L 497 119 Q 504 107 512 113 Q 536 131 537 242 Q 537 296 539 317 C 541 344 541 344 534 350 Z"/><path d="M 700 344 Q 748 351 795 355 Q 825 356 826 337 Q 835 211 818 192 Q 811 186 755 194 Q 739 198 737 193 Q 734 187 745 178 Q 797 142 829 113 Q 844 100 855 115 Q 885 151 882 198 Q 879 309 886 344 Q 890 363 880 372 Q 855 396 836 406 Q 824 412 815 403 Q 808 394 708 373 Q 704 373 701 371 L 645 363 Q 602 359 534 350 C 504 346 509 312 539 317 L 645 335 L 700 344 Z"/><path d="M 643 -28 Q 647 -52 654 -61 Q 660 -68 667 -66 Q 694 -48 695 116 Q 694 164 700 344 L 701 371 Q 702 392 710 421 Q 713 437 700 447 Q 684 457 672 463 C 646 477 613 484 623 456 Q 632 429 644 401 Q 644 383 645 363 L 645 335 Q 639 -1 643 -28 Z"/></g><g transform="translate(1860 900) scale(1 -1)"><path d="M 310 637 Q 340 577 311 357 Q 299 300 269 232 Q 236 163 146 80 Q 130 67 125 59 Q 122 50 136 50 Q 178 50 258 125 Q 354 224 386 446 Q 395 524 405 602 Q 412 627 389 639 Q 334 669 315 667 Q 293 663 310 637 Z"/><path d="M 979 84 Q 954 144 939 247 Q 936 265 930 272 Q 920 279 916 262 Q 903 201 887 155 Q 880 124 852 105 Q 825 78 707 87 Q 641 96 622 132 Q 595 201 620 515 Q 627 621 641 666 Q 653 697 566 747 Q 547 760 526 749 Q 513 742 536 711 Q 564 671 565 570 Q 565 489 557 329 Q 542 128 591 71 Q 630 32 708 20 Q 753 16 816 16 Q 895 17 953 42 Q 993 54 979 84 Z"/></g></svg></a>
-      <span>© 2026 Caroline Chen</span>
+      <span><svg class="seal static" viewBox="0 0 100 100" aria-hidden="true"><use href="#sealg" filter="url(#stampfx)"/></svg>© 2026 Caroline Chen</span>
       <a href="#top">Back to top</a>
     </footer>
   </section>
@@ -776,7 +813,8 @@ let glitchKick=()=>{};
 })();
 
 /* ===================== FIELD NOTES ===================== */
-$("#field").innerHTML=FIELD.map(([f,c])=>`<figure>${texHTML(`assets/china/thumbs/${f}.jpg`,c,"wj sm")}<figcaption>${c}</figcaption></figure>`).join("");
+const FR=[[-2.6,10,-14,1],[1.9,-6,10,1.22],[-1.3,18,-4,.92],[2.8,0,16,1.12],[-2,14,-12,.96],[1.5,-4,8,1.18]];
+$("#field").innerHTML=FIELD.map(([f,c],i)=>{ const [r,y,px,g]=FR[i%FR.length]; return `<figure style="--r:${r}deg;--y:${y}px;--px:${px}px;flex-grow:${g}">${texHTML(`assets/china/thumbs/${f}.jpg`,c,"wj sm")}<figcaption>${c}</figcaption></figure>`; }).join("");
 
 /* texture all images lazily, bind engagement */
 (function(){
@@ -1042,7 +1080,7 @@ $("#copy").addEventListener("click",async()=>{
     if(vertical){ G=Math.min(W*.46,(H-340)/2.6); const top=Math.max(80,(H-310-G*2.6)/2+70); boxes=[0,1,2].map(i=>({x:W*.1,y:top+i*G*.86})); }
     else { G=Math.min(W*.185,H*.38); const tw=G*2.82, left=W*.075, top=H*.47-G*.5; boxes=[0,1,2].map(i=>({x:left+i*G*.91,y:top})); }
     bbox={x:boxes[0].x,y:boxes[0].y,w:vertical?G:G*2.82,h:vertical?G*2.72:G};
-    buildTex(); redrawGlyph(); redrawMarks();
+    buildTex(); redrawGlyph(); redrawMarks(); placeSeal(); if(done) buildGhost();
   }
   const sc=()=>G/1024;
   function charT(g,ci){ const b=boxes[ci],s=sc(); g.setTransform(s*DPR,0,0,-s*DPR,b.x*DPR,(b.y+900*s)*DPR); }
@@ -1105,6 +1143,21 @@ $("#copy").addEventListener("click",async()=>{
   function buildTex(){ texC.width=inkd.width=glyph.width; texC.height=inkd.height=glyph.height; tx.setTransform(DPR,0,0,DPR,0,0); tx.clearRect(0,0,W,H); TEX.forEach((im,i)=>{ if(im.complete&&im.naturalWidth) tx.drawImage(im,boxes[i].x,boxes[i].y,G,G); }); }
   function syncLayers(){ ix.setTransform(1,0,0,1,0,0); ix.globalCompositeOperation="source-over"; ix.clearRect(0,0,inkd.width,inkd.height); ix.drawImage(texC,0,0); ix.globalCompositeOperation="destination-in"; ix.drawImage(glyph,0,0); ix.globalCompositeOperation="source-over"; paintSpatter(); }
 
+
+  /* the seal: pressed beside the last stroke once the name is written */
+  const sealEl=$("#seal"); let sealX=0,sealY=0;
+  function placeSeal(){ if(!sealEl) return; const ss=Math.round(Math.max(50,Math.min(116,G*.235)));
+    sealEl.style.setProperty("--ss",ss+"px");
+    const x=vertical?bbox.x+G*.98:bbox.x+bbox.w+G*.01, y=vertical?bbox.y+bbox.h-ss*1.05:bbox.y+G*.88-ss*.92;
+    sealEl.style.left=Math.round(x)+"px"; sealEl.style.top=Math.round(y)+"px"; sealX=x+ss/2; sealY=y+ss/2; }
+  function stampNow(again){ if(!sealEl) return; hero.classList.remove("stamp","restamp"); void sealEl.getBoundingClientRect(); hero.classList.add(again?"restamp":"stamp");
+    if(!reduce){ setTimeout(()=>ripples.push({x:sealX,y:sealY,t:performance.now()}),230); } }
+  sealEl&&sealEl.addEventListener("pointerdown",e=>{ e.stopPropagation(); if(done) stampNow(true); });
+  sealEl&&sealEl.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); stampNow(true); } });
+  /* blurred ghosts of the name that drift apart behind it, like the fragments around a character in water */
+  let ghostC=null;
+  function buildGhost(){ if(reduce||!("filter" in ctx)) return; const g=(ghostC=document.createElement("canvas")).getContext("2d"); ghostC.width=inkd.width; ghostC.height=inkd.height; g.filter=`blur(${Math.round(15*DPR)}px)`; g.drawImage(inkd,0,0); g.filter="none"; }
+
   // ripples: rings on the paper; the name refracts as each ring passes through it
   function liveRipples(now){
     ripples=ripples.filter(r=>now-r.t<LIFE);
@@ -1137,7 +1190,7 @@ $("#copy").addEventListener("click",async()=>{
         if(f>drawn[k]){ const e=ease(f); paintStroke(k,e); drawn[k]=f; if(f<1){ const c=CH[s.ci]; tip=toScreen(s.ci,pointAt(c.med[s.si],c.len[s.si],e)); } }
       });
       syncLayers();
-      if(t>=WRITE_END){ done=true; drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); redrawGlyph(); hero.classList.add("done","scan"); artT=now; flickSet(); }
+      if(t>=WRITE_END){ done=true; drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); redrawGlyph(); hero.classList.add("done","scan"); artT=now; flickSet(); buildGhost(); setTimeout(()=>stampNow(false),700); }
       else if(t>WRITE_END*.5 && artT<0){ artT=now; hero.classList.add("scan"); }
     }
     render(now,tip);
@@ -1153,6 +1206,7 @@ $("#copy").addEventListener("click",async()=>{
     drawRipples(now);
 
     ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,cv.width,cv.height);
+    if(ghostC&&done){ const sw=Math.sin(now/2300)*9; ctx.save(); ctx.globalAlpha=.2; ctx.drawImage(ghostC,(-44+sw-pmx*56)*DPR,(12-pmy*30)*DPR); ctx.globalAlpha=.14; ctx.drawImage(ghostC,(64-sw+pmx*70)*DPR,(-10+pmy*38)*DPR); ctx.restore(); }
     const act=reduce?[]:liveRipples(now);
     let gy=-1,gR=0;
     if(done&&inside&&px>bbox.x-40&&px<bbox.x+bbox.w+40&&py>bbox.y-40&&py<bbox.y+bbox.h+40){ gy=py; gR=G*.28; }
@@ -1172,7 +1226,7 @@ $("#copy").addEventListener("click",async()=>{
   }
 
   function loop(now){ frame(now); if(visible) raf=requestAnimationFrame(loop); }
-  function finish(){ drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); done=true; artT=1; if(!drops.length) flickSet(); hero.classList.add("done","scan"); redrawGlyph(); redrawMarks(); render(performance.now(),null); }
+  function finish(){ drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); done=true; artT=1; if(!drops.length) flickSet(); hero.classList.add("done","scan","stamp"); redrawGlyph(); redrawMarks(); render(performance.now(),null); }
 
   hero.addEventListener("pointermove",e=>{ const b=hero.getBoundingClientRect(); px=e.clientX-b.left; py=e.clientY-b.top; inside=true; tmx=(px/W-.5)*2; tmy=(py/H-.5)*2; });
   hero.addEventListener("pointerleave",()=>{ inside=false; tmx=tmy=0; });
@@ -1230,6 +1284,71 @@ $("#copy").addEventListener("click",async()=>{
   el.addEventListener("click",finish); addEventListener("keydown",onKey);
   const loop=now=>{ if(done) return; const t=now-t0; if(t>=2500) reveal(); render(t); if(t>=END) finish(); else requestAnimationFrame(loop); };
   (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(()=>{ t0=performance.now(); requestAnimationFrame(loop); });
+})();
+
+
+/* ===================== SEAL (陈锦儿, carved in white) ===================== */
+(function(){
+  const D=window.NAME_STROKES||[], sd=document.getElementById("sd"); if(!sd||D.length<3) return;
+  const put=(ci,x,y,S)=>`<g transform="translate(${x} ${y}) scale(${S/1024}) translate(0 900) scale(1 -1)" fill="#000" stroke="#000" stroke-width="26" stroke-linejoin="round">${D[ci].s.map(d=>`<path d="${d}"/>`).join("")}</g>`;
+  sd.innerHTML=`<filter id="stampfx" x="-6%" y="-6%" width="112%" height="112%" color-interpolation-filters="sRGB"><feTurbulence type="fractalNoise" baseFrequency=".8" numOctaves="2" seed="4" result="n"/><feDisplacementMap in="SourceGraphic" in2="n" scale="3.2" xChannelSelector="R" yChannelSelector="G" result="d"/><feTurbulence type="fractalNoise" baseFrequency=".07" numOctaves="3" seed="11" result="m"/><feColorMatrix in="m" type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 -4.2 3.35" result="mm"/><feComposite in="d" in2="mm" operator="in"/></filter>
+<mask id="sealmask" maskUnits="userSpaceOnUse" x="0" y="0" width="100" height="100"><rect width="100" height="100" fill="#fff"/>${put(0,49,11,41)}${put(1,49,50,41)}${put(2,9,11,41)}</mask>
+<g id="sealg"><rect x="3" y="3" width="94" height="94" rx="7" fill="currentColor" mask="url(#sealmask)"/></g>`;
+})();
+
+/* ===================== GIANT CROPPED GLYPHS: pulled in and out of focus by scroll ===================== */
+(function(){
+  const D=window.NAME_STROKES||[]; if(D.length<3) return;
+  const mk=ci=>`<svg viewBox="0 0 1024 1024" aria-hidden="true"><g transform="translate(0 900) scale(1 -1)">${D[ci].s.map(d=>`<path d="${d}"/>`).join("")}</g></svg>`;
+  const items=[["#work",0],["#about",1],["#contact",2]].map(([sel,ci])=>{ const sec=document.querySelector(sel); if(!sec) return null; const gl=document.createElement("div"); gl.className="gl"; gl.setAttribute("aria-hidden","true"); gl.innerHTML=mk(ci); sec.prepend(gl); return {sec,svg:gl.firstChild}; }).filter(Boolean);
+  if(reduce) return;
+  let tick=0;
+  function upd(){ tick=0; const vh=innerHeight;
+    items.forEach(({sec,svg})=>{ const r=sec.getBoundingClientRect(); if(r.bottom<-vh||r.top>vh*2) return;
+      const cy=r.top+svg.offsetTop+svg.offsetHeight/2, p=(cy-vh/2)/vh, a=Math.abs(p);
+      svg.style.setProperty("--gb",Math.min(18,Math.max(0,a-.18)*26).toFixed(1)+"px");
+      svg.style.setProperty("--gy",(-p*80).toFixed(0)+"px"); }); }
+  addEventListener("scroll",()=>{ if(!tick) tick=requestAnimationFrame(upd); },{passive:true}); addEventListener("resize",upd); upd();
+})();
+
+/* ===================== INK-WASH MIST: layered ridges that drift and parallax ===================== */
+(function(){
+  const hero=document.getElementById("hero"), box=document.getElementById("mist"); if(!box) return;
+  const hash=n=>{ n=Math.imul(n^n>>>15,0x2c1b3c6d); n=Math.imul(n^n>>>12,0x297a2d39); return ((n^n>>>15)>>>0)/4294967296; };
+  const vn=(x,s)=>{ const i=Math.floor(x),f=x-i,u=f*f*(3-2*f); return hash(i*7919+s)*(1-u)+hash((i+1)*7919+s)*u; };
+  const fbm=(x,s)=>{ let a=.5,f=1,v=0; for(let o=0;o<4;o++){ v+=a*vn(x*f,s+o*131); a*=.5; f*=2.15; } return v; };
+  const N=5, L=[]; let mx=0,tx=0,vis=true,raf=0;
+  function build(){
+    box.innerHTML=""; L.length=0; const Wc=Math.round(hero.clientWidth*1.3), Hc=Math.max(200,Math.round(hero.clientHeight*.46)), r=rng(77);
+    for(let k=0;k<N;k++){
+      const c=document.createElement("canvas"); c.width=Wc; c.height=Hc; const g=c.getContext("2d");
+      const base=Hc*(.50+k*.115), amp=base*.82, fr=2.0+k*1.5, a=.05+k*.036, ys=[];
+      g.beginPath(); g.moveTo(0,Hc);
+      for(let x=0;x<=Wc;x+=3){ const n=fbm(x/Wc*fr+k*3.7,k*977); const y=Math.max(Hc*.03,base-amp*Math.pow(n,1.55)*1.25); ys.push(y); g.lineTo(x,y); }
+      g.lineTo(Wc,Hc); g.closePath();
+      const top=Math.min(...ys), gr=g.createLinearGradient(0,top,0,Hc);
+      gr.addColorStop(0,`rgba(17,17,17,${a})`); gr.addColorStop(.5,`rgba(17,17,17,${a*.5})`); gr.addColorStop(1,"rgba(17,17,17,0)");
+      g.fillStyle=gr; g.fill();
+      // dry-brush grain eaten out of the wash
+      g.globalCompositeOperation="destination-out";
+      for(let i=0;i<Wc*Hc/170;i++){ g.globalAlpha=.1+r()*.35; g.fillRect(r()*Wc,r()*Hc,1+r()*2.2,1+r()*1.2); }
+      // fog streaks
+      for(let i=0;i<7;i++){ const y=top+r()*(Hc-top)*.8, h=6+r()*26; g.globalAlpha=.1+r()*.22; const gg=g.createLinearGradient(0,y-h,0,y+h); gg.addColorStop(0,"rgba(0,0,0,0)"); gg.addColorStop(.5,"rgba(0,0,0,1)"); gg.addColorStop(1,"rgba(0,0,0,0)"); g.fillStyle=gg; g.fillRect(r()*Wc*.4-40,y-h,Wc*(.3+r()*.6),h*2); }
+      g.globalAlpha=1; g.globalCompositeOperation="source-over";
+      // a few ink dots clinging to the nearer ridges
+      if(k>=2){ g.fillStyle="#111"; for(let i=0;i<70+k*30;i++){ const xi=Math.floor(r()*Wc/3), y=ys[xi]; if(y==null) continue; g.globalAlpha=.1+r()*.35; g.beginPath(); g.arc(xi*3+(r()-.5)*6,y+r()*Hc*.06,.6+r()*1.5,0,6.283); g.fill(); } g.globalAlpha=1; }
+      box.appendChild(c); L.push(c);
+    }
+    place(performance.now());
+  }
+  function place(now){ const sy=Math.min(1.2,scrollY/innerHeight);
+    L.forEach((c,k)=>{ const sway=reduce?0:Math.sin(now/(5200+k*1900)+k*1.3)*11*(k+1)*.55; c.style.transform=`translate3d(${(sway-mx*(k+1)*7).toFixed(1)}px,${(sy*(16+k*14)).toFixed(1)}px,0)`; }); }
+  function loop(now){ raf=0; if(!vis) return; place(now); raf=requestAnimationFrame(loop); }
+  hero.addEventListener("pointermove",e=>{ tx=(e.clientX/innerWidth-.5)*2; });
+  setInterval(()=>{ mx+=(tx-mx)*.25; },60);
+  new IntersectionObserver(([en])=>{ vis=en.isIntersecting; if(vis&&!raf&&!reduce) raf=requestAnimationFrame(loop); }).observe(hero);
+  let rt; addEventListener("resize",()=>{ clearTimeout(rt); rt=setTimeout(build,250); });
+  build(); if(!reduce) raf=requestAnimationFrame(loop);
 })();
 
 /* nav + spine: mark current section */
