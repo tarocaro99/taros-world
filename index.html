@@ -329,7 +329,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
     <p class="fine" aria-hidden="true">Caroline Chen / Portfolio 2026 / UX, brand, print, motion</p>
     <div class="hero-foot">
       <div><p class="tag">Watch people.<br>Then build.</p><p class="who">Caroline Chen, a designer across UX, brand, print and motion, trained in design and economics.</p></div>
-      <span class="hint" id="hint">Hover the name, or click anywhere</span>
+      <span class="hint" id="hint">Click the name to flick paint</span>
       <div class="right"><p><span class="pill"><span class="dot" aria-hidden="true"></span>Open to full-time roles</span></p><button class="btn sm replay" type="button" id="replay"><span class="ico ico-knot" aria-hidden="true"></span>Write it again</button></div>
     </div>
   </section>
@@ -829,21 +829,46 @@ tick(); setInterval(tick,15000);
   function texture(){}
   function redrawGlyph(){ gx.setTransform(1,0,0,1,0,0); gx.clearRect(0,0,glyph.width,glyph.height); SEQ.forEach((s,k)=>{ if(drawn[k]>0) paintStroke(k,drawn[k]); }); if(done) texture(); syncLayers(); }
   function redrawMarks(){ mx.setTransform(1,0,0,1,0,0); mx.clearRect(0,0,mk.width,mk.height); SEQ.forEach((s,k)=>{ if(air[k]>0) drawAir(k,air[k]); }); }
+  /* white paint flicked across the ink: drops live in each character's own space so they stay put on resize */
+  const drops=[]; let spatUntil=0;
+  function flick(x0,y0,ang,power,delay=0){
+    const now=performance.now()+delay, R=rng((x0*7+y0*13+drops.length*31)|0), u=G/1024;
+    const add=(x,y,r,el,a,dt)=>{ let ci=0,best=1e9; boxes.forEach((b,i)=>{ const d=Math.hypot(x-(b.x+G/2),y-(b.y+G/2)); if(d<best){best=d;ci=i;} });
+      drops.push({ci,x:(x-boxes[ci].x)/G,y:(y-boxes[ci].y)/G,r:r/G,el,a,t:now+dt,lump:[R(),R(),R()]}); };
+    const ca=Math.cos(ang), sa=Math.sin(ang);
+    add(x0,y0,power*(5+R()*4)*u*3,1+R()*.3,ang,0);                       // the landing blot
+    const n=11+Math.floor(R()*12);
+    for(let k=1;k<=n;k++){ const d=power*u*3*(8+k*k*1.1+R()*16), sp=(R()-.5)*d*.3, r=power*u*3*Math.max(.55,(4.6-k*.22)*(.45+R()*.8));
+      add(x0+ca*d-sa*sp, y0+sa*d+ca*sp, r, 1.3+R()*1.6+k*.08, ang, 18*k+R()*30); }
+    for(let k=0;k<46;k++){ const d=power*u*3*(4+Math.pow(R(),.7)*80), q=ang+(R()-.5)*2.2; add(x0+Math.cos(q)*d,y0+Math.sin(q)*d,u*3*(.4+Math.pow(R(),2)*1.6),1+R()*.4,q,30+R()*200); }  // mist
+    if(drops.length>900) drops.splice(0,drops.length-900);
+    spatUntil=Math.max(spatUntil,now+600);
+  }
+  function paintSpatter(){
+    const now=performance.now(); ix.save(); ix.setTransform(DPR,0,0,DPR,0,0); ix.fillStyle="#fbfaf7";
+    for(const d of drops){ const age=now-d.t; if(age<0) continue; const k=reduce?1:Math.min(1,age/140), pop=k<1?k*1.18:1;
+      const b=boxes[d.ci], x=b.x+d.x*G, y=b.y+d.y*G, r=d.r*G*pop; if(r<.25) continue;
+      ix.beginPath(); ix.ellipse(x,y,r*d.el,r,d.a,0,6.2832); ix.fill();
+      if(r>1.4){ for(let j=0;j<3;j++){ const q=d.a+d.lump[j]*6.28, rr=r*(.45+.3*d.lump[(j+1)%3]); ix.beginPath(); ix.arc(x+Math.cos(q)*r*.75,y+Math.sin(q)*r*.75,rr,0,6.2832); ix.fill(); } } }
+    ix.restore();
+  }
+  function flickSet(){ const cx=bbox.x, cy=bbox.y; const P=vertical?[[.15,.2,.9],[.85,1.3,2.2],[.2,2.1,.6],[.6,.75,-.4],[.5,2.5,3.6]]:[[.35,.25,.25],[1.55,.7,2.9],[2.45,.2,1.9],[.9,.85,-.3],[2.1,.55,.6],[.25,.7,1.2],[1.35,.15,3.4]];
+    P.forEach(([u,v,a],i)=>flick(cx+u*G,cy+v*G,a+(Math.random()-.5)*.4,.8+Math.random()*.5,i*260)); }
   const TEX=[0,1,2].map(i=>{ const im=new Image(); im.src=`assets/sym/name-${i}.webp`; return im; });
   const texC=document.createElement("canvas"), tx=texC.getContext("2d"), inkd=document.createElement("canvas"), ix=inkd.getContext("2d");
   function buildTex(){ texC.width=inkd.width=glyph.width; texC.height=inkd.height=glyph.height; tx.setTransform(DPR,0,0,DPR,0,0); tx.clearRect(0,0,W,H); TEX.forEach((im,i)=>{ if(im.complete&&im.naturalWidth) tx.drawImage(im,boxes[i].x,boxes[i].y,G,G); }); }
-  function syncLayers(){ ix.setTransform(1,0,0,1,0,0); ix.globalCompositeOperation="source-over"; ix.clearRect(0,0,inkd.width,inkd.height); ix.drawImage(texC,0,0); ix.globalCompositeOperation="destination-in"; ix.drawImage(glyph,0,0); ix.globalCompositeOperation="source-over"; }
+  function syncLayers(){ ix.setTransform(1,0,0,1,0,0); ix.globalCompositeOperation="source-over"; ix.clearRect(0,0,inkd.width,inkd.height); ix.drawImage(texC,0,0); ix.globalCompositeOperation="destination-in"; ix.drawImage(glyph,0,0); ix.globalCompositeOperation="source-over"; paintSpatter(); }
 
   // ripples: rings on the paper; the name refracts as each ring passes through it
   function liveRipples(now){
     ripples=ripples.filter(r=>now-r.t<LIFE);
     const out=[]; const cx=bbox.x+bbox.w/2, cy=bbox.y+bbox.h/2, half=Math.hypot(bbox.w,bbox.h)/2+G*.2;
-    for(const rp of ripples){ const age=now-rp.t, r=age*SPEED, band=46+age*.025, amp=G*.075*(1-age/LIFE), d=Math.hypot(cx-rp.x,cy-rp.y);
+    for(const rp of ripples){ const age=Math.max(0,now-rp.t), r=age*SPEED, band=46+age*.025, amp=G*.075*(1-age/LIFE), d=Math.hypot(cx-rp.x,cy-rp.y);
       if(r+band>d-half && r-band<d+half) out.push({x:rp.x,y:rp.y,r,band,amp}); }
     return out;
   }
   function drawRipples(now){
-    for(const rp of ripples){ const age=now-rp.t, a=1-age/LIFE; if(a<=0) continue; const r=age*SPEED;
+    for(const rp of ripples){ const age=Math.max(0,now-rp.t), a=1-age/LIFE; if(a<=0) continue; const r=age*SPEED;
       const g=bx.createRadialGradient(rp.x,rp.y,Math.max(0,r-30),rp.x,rp.y,r+30); g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(.5,`rgba(0,0,0,${.075*a})`); g.addColorStop(1,"rgba(0,0,0,0)");
       bx.fillStyle=g; bx.beginPath(); bx.arc(rp.x,rp.y,r+30,0,7); bx.fill();
       bx.lineWidth=1; [[1,.3],[.9,.16],[.79,.09],[.66,.05]].forEach(([m,al])=>{ bx.strokeStyle=`rgba(0,0,0,${al*a})`; bx.beginPath(); bx.arc(rp.x,rp.y,r*m,0,7); bx.stroke(); });
@@ -869,13 +894,14 @@ tick(); setInterval(tick,15000);
         if(f>drawn[k]){ const e=ease(f); paintStroke(k,e); drawn[k]=f; if(f<1){ const c=CH[s.ci]; tip=toScreen(s.ci,pointAt(c.med[s.si],c.len[s.si],e)); } }
       });
       syncLayers();
-      if(t>=WRITE_END){ done=true; drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); redrawGlyph(); hero.classList.add("done","scan"); artT=now; ripples.push({x:bbox.x+bbox.w/2,y:bbox.y+bbox.h/2,t:now}); }
+      if(t>=WRITE_END){ done=true; drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); redrawGlyph(); hero.classList.add("done","scan"); artT=now; flickSet(); ripples.push({x:bbox.x+bbox.w/2,y:bbox.y+bbox.h/2,t:now}); }
       else if(t>WRITE_END*.5 && artT<0){ artT=now; hero.classList.add("scan"); }
     }
     render(now,tip);
   }
 
   function render(now,tip){
+    if(now<spatUntil) syncLayers();
     pmx+=(tmx-pmx)*.06; pmy+=(tmy-pmy)*.06;
     mk.style.transform=`translate(${pmx*8}px,${pmy*6}px)`;
     bx.setTransform(DPR,0,0,DPR,0,0); bx.clearRect(0,0,W,H);
@@ -907,12 +933,12 @@ tick(); setInterval(tick,15000);
   }
 
   function loop(now){ frame(now); if(visible) raf=requestAnimationFrame(loop); }
-  function finish(){ drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); done=true; artT=1; hero.classList.add("done","scan"); redrawGlyph(); redrawMarks(); render(performance.now(),null); }
-  function replay(){ start=performance.now(); drawn=SEQ.map(()=>0); air=SEQ.map(()=>0); done=false; artT=-1; hero.classList.remove("done","scan"); redrawGlyph(); redrawMarks(); if(reduce) finish(); }
+  function finish(){ drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); done=true; artT=1; if(!drops.length) flickSet(); hero.classList.add("done","scan"); redrawGlyph(); redrawMarks(); render(performance.now(),null); }
+  function replay(){ drops.length=0; start=performance.now(); drawn=SEQ.map(()=>0); air=SEQ.map(()=>0); done=false; artT=-1; hero.classList.remove("done","scan"); redrawGlyph(); redrawMarks(); if(reduce) finish(); }
 
   hero.addEventListener("pointermove",e=>{ const b=hero.getBoundingClientRect(); px=e.clientX-b.left; py=e.clientY-b.top; inside=true; tmx=(px/W-.5)*2; tmy=(py/H-.5)*2; });
   hero.addEventListener("pointerleave",()=>{ inside=false; tmx=tmy=0; });
-  hero.addEventListener("pointerdown",e=>{ if(e.target.closest("a,button")||reduce) return; const b=hero.getBoundingClientRect(); ripples.push({x:e.clientX-b.left,y:e.clientY-b.top,t:performance.now()}); if(ripples.length>6) ripples.shift(); lastDrop=performance.now(); });
+  hero.addEventListener("pointerdown",e=>{ if(e.target.closest("a,button")||reduce) return; const b=hero.getBoundingClientRect(); { const x=e.clientX-b.left, y=e.clientY-b.top; if(done&&x>bbox.x-G*.3&&x<bbox.x+bbox.w+G*.3&&y>bbox.y-G*.3&&y<bbox.y+bbox.h+G*.3) flick(x,y,Math.random()*6.28,.7+Math.random()*.6); } ripples.push({x:e.clientX-b.left,y:e.clientY-b.top,t:performance.now()}); if(ripples.length>6) ripples.shift(); lastDrop=performance.now(); });
   $("#replay").addEventListener("click",replay);
   let rT=0; addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ layout(); if(reduce) render(performance.now(),null); },120); });
   const ready=()=>{ layout(); if(reduce){ finish(); } else { start=performance.now(); raf=requestAnimationFrame(loop);
