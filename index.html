@@ -78,7 +78,9 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 /* ---------- depth: ink-wash mist, giant cropped glyphs, the seal ---------- */
 .hero .mist{position:absolute;left:0;right:0;bottom:0;height:46%;z-index:0;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 3.4s ease .3s}
-.hero.scan .mist{opacity:1}
+.hero.scan .mist{opacity:.5}
+.hero .sun{position:absolute;left:44vw;bottom:15%;width:clamp(70px,9vw,150px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 42% 38%,#b3261e,#8f1c16 70%);opacity:0;transform:translateY(40px);z-index:0;pointer-events:none;transition:opacity 2.6s ease 1.2s,transform 4s cubic-bezier(.2,.7,.2,1) 1.2s}
+.hero.scan .sun{opacity:.75;transform:none}
 .art{mix-blend-mode:multiply}
 .hero .mist canvas{inset:auto;left:-15%;bottom:0;width:130%;max-width:none;height:100%;will-change:transform}
 section.block{isolation:isolate}
@@ -413,6 +415,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
 <main id="top">
   <section class="hero" id="hero" aria-label="Caroline Chen, designer">
     <h1 class="skip" style="left:-999px">Caroline Chen, designer</h1>
+    <div class="sun" aria-hidden="true"></div>
     <div class="mist" id="mist" aria-hidden="true"></div>
     <canvas id="bg" aria-hidden="true"></canvas>
     <div class="art" id="art" aria-hidden="true">
@@ -1200,7 +1203,7 @@ $("#copy").addEventListener("click",async()=>{
     drawRipples(now);
 
     ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,cv.width,cv.height);
-    if(ghostC&&done){ const sw=Math.sin(now/2300)*9; ctx.save(); ctx.globalAlpha=.2; ctx.drawImage(ghostC,(-44+sw-pmx*56)*DPR,(12-pmy*30)*DPR); ctx.globalAlpha=.14; ctx.drawImage(ghostC,(64-sw+pmx*70)*DPR,(-10+pmy*38)*DPR); ctx.restore(); }
+    if(ghostC&&done){ const sw=Math.sin(now/2300)*9; ctx.save(); ctx.globalAlpha=.09; ctx.drawImage(ghostC,(-44+sw-pmx*56)*DPR,(12-pmy*30)*DPR); ctx.globalAlpha=.06; ctx.drawImage(ghostC,(64-sw+pmx*70)*DPR,(-10+pmy*38)*DPR); ctx.restore(); }
     const act=reduce?[]:liveRipples(now);
     let gy=-1,gR=0;
     if(done&&inside&&px>bbox.x-40&&px<bbox.x+bbox.w+40&&py>bbox.y-40&&py<bbox.y+bbox.h+40){ gy=py; gR=G*.28; }
