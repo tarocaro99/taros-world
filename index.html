@@ -58,7 +58,7 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 @keyframes blink{50%{opacity:.25}}
 
 /* ---------- hero ---------- */
-.hero{position:relative;height:100svh;min-height:620px;overflow:hidden;touch-action:pan-y;background:var(--paper)}
+.hero{position:relative;height:100svh;min-height:620px;overflow:hidden;touch-action:pan-y;background:var(--paper);cursor:crosshair}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%}
 #bg{z-index:0}
 #echo{z-index:1;opacity:.07;filter:blur(1.5px);will-change:transform}
@@ -99,10 +99,15 @@ body.past .spine a:nth-child(2){transition-delay:.05s} body.past .spine a:nth-ch
 
 /* ---------- sections ---------- */
 section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
-.head{display:grid;grid-template-columns:1fr auto;align-items:end;gap:20px;border-top:1px solid var(--ink);padding-top:16px;margin-bottom:clamp(40px,6vw,76px);max-width:1440px}
+.head{position:relative;display:grid;grid-template-columns:1fr auto;align-items:end;gap:20px;border-top:1px solid var(--ink);padding-top:16px;margin-bottom:clamp(40px,6vw,76px);max-width:1440px}
 .head h2{font-family:var(--disp);font-weight:400;font-size:clamp(26px,3.3vw,46px);line-height:1.1;letter-spacing:-.02em}
 .head .meta{color:var(--mute);font-size:11px;text-align:right;font-variant-numeric:tabular-nums}
 .lede{color:var(--mute);max-width:56ch;margin:-36px 0 clamp(40px,5vw,64px)}
+
+/* waveform strips that sit on each section rule */
+.wave{position:absolute;left:0;bottom:100%;width:100%;height:46px;clip-path:inset(0 100% 0 0);transition:clip-path 1.5s var(--ease);pointer-events:none}
+.wave.in{clip-path:inset(0 0 0 0)}
+.fine{position:absolute;z-index:4;left:calc(var(--gut) - 6px);top:50%;transform:translateY(-50%) rotate(180deg);writing-mode:vertical-rl;font-size:10px;color:var(--mute);letter-spacing:.03em;pointer-events:none}
 
 /* textured images: grayscale + pixel smear at rest, scan into color on engage */
 .tex{position:relative;overflow:hidden;background:var(--fog)}
@@ -225,7 +230,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   .bar{grid-template-columns:auto 1fr}
   .nav{justify-self:end;gap:18px}
   .clocks{display:none}
-  .hint{display:none}
+  .hint,.fine{display:none}
   .hero-foot{grid-template-columns:1fr;gap:14px;bottom:22px}
   .hero-foot .right{justify-self:start;text-align:left;display:flex;gap:18px;align-items:center;flex-wrap:wrap}
   .hero-foot .right p{margin:0}
@@ -287,9 +292,10 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
     <canvas id="ink" aria-hidden="true"></canvas>
     <canvas id="marks" aria-hidden="true"></canvas>
 
+    <p class="fine" aria-hidden="true">Caroline Chen / Portfolio 2026 / UX, brand, print, motion</p>
     <div class="hero-foot">
       <div><p class="tag">Watch people.<br>Then build.</p><p class="who">Caroline Chen, a designer across UX, brand, print and motion, trained in design and economics.</p></div>
-      <span class="hint" id="hint">Move across the name</span>
+      <span class="hint" id="hint">Hover the name, or click anywhere</span>
       <div class="right"><p><span class="dot" aria-hidden="true"></span>Open to full-time roles</p><button class="replay" type="button" id="replay">Write it again</button></div>
     </div>
   </section>
@@ -538,7 +544,13 @@ function texify(el){
     g.drawImage(img,0,0,w,h);
     try{
       const d=g.getImageData(0,0,w,h), a=d.data;
-      for(let i=0;i<a.length;i+=4){ let v=.3*a[i]+.59*a[i+1]+.11*a[i+2]; v=(v-128)*1.12+132; a[i]=a[i+1]=a[i+2]=v<0?0:v>255?255:v; }
+      // photocopy: grain, crushed contrast, toner speckle and dropout
+      const q=rng(w*13+h);
+      for(let i=0;i<a.length;i+=4){
+        let v=.3*a[i]+.59*a[i+1]+.11*a[i+2]+(q()-.5)*64;
+        let t=(v-58)/150; t=t<0?0:t>1?1:t; v=t*t*(3-2*t)*255;
+        if(v>210&&q()<.005) v=30; else if(v<45&&q()<.025) v=215;
+        a[i]=a[i+1]=a[i+2]=v; }
       g.putImageData(d,0,0);
     }catch(e){ g.globalCompositeOperation="saturation"; g.fillStyle="#000"; g.fillRect(0,0,w,h); g.globalCompositeOperation="source-over"; }
     // a few displaced horizontal slices
@@ -632,6 +644,31 @@ $("#field").innerHTML=FIELD.map(([f,c])=>`<figure>${texHTML(`assets/china/thumbs
   }
 })();
 
+/* ===================== WAVEFORM STRIPS on section rules ===================== */
+(function(){
+  document.querySelectorAll(".head").forEach((h,idx)=>{
+    const c=document.createElement("canvas"); c.className="wave"; c.setAttribute("aria-hidden","true"); h.prepend(c);
+    const draw=()=>{
+      const W=h.clientWidth, H=46, D=Math.min(2,devicePixelRatio||1); c.width=W*D; c.height=H*D; const g=c.getContext("2d"); g.scale(D,D);
+      const r=rng(idx*7919+13), n=2+Math.floor(r()*2);
+      for(let k=0;k<n;k++){
+        const cw=70+r()*Math.min(300,W*.24), cx=r()*(W-cw); g.fillStyle="#000";
+        for(let x=0;x<cw;x+=2.4+r()*3.2){
+          const env=Math.sin(x/cw*Math.PI), hh=H*(.12+.88*env*(.3+.7*r())), bw=1+r()*2.4, X=cx+x;
+          g.beginPath(); g.moveTo(X,H); g.lineTo(X+bw/2,H-hh); g.lineTo(X+bw,H); g.fill();
+          if(r()<.22){ const s=1+Math.floor(r()*4); g.fillRect(X+(r()-.5)*22,H-hh*(.3+r()*.9),s,s); }
+        }
+        for(let i=0;i<12;i++){ const s=2+Math.floor(r()*5), x=cx+(r()<.5?-r()*60:cw+r()*60), y=H-4-r()*H*.75;
+          if(r()<.35){ g.strokeStyle="#000"; g.lineWidth=1; g.strokeRect(x+.5,y+.5,s,s); } else g.fillRect(x,y,s,s); }
+      }
+      if(r()<.6){ g.fillStyle="#e1251b"; const s=4+Math.floor(r()*3); g.fillRect(r()*(W-10),H-8-r()*H*.5,s,s); }
+      g.globalCompositeOperation="destination-out"; for(let i=0;i<W*1.3;i++) g.fillRect(r()*W,r()*H,1,1); g.globalCompositeOperation="source-over";
+    };
+    draw(); let tm; addEventListener("resize",()=>{ clearTimeout(tm); tm=setTimeout(draw,200); });
+    new IntersectionObserver(([en],o)=>{ if(en.isIntersecting){ c.classList.add("in"); o.disconnect(); } },{threshold:.4}).observe(h);
+  });
+})();
+
 /* ===================== DRAWER ===================== */
 const drawer=$("#drawer"),dBody=$("#d-body"),dNum=$("#d-num");
 function openProject(title){
@@ -716,7 +753,8 @@ tick(); setInterval(tick,15000);
 
   let W=0,H=0,DPR=1,G=300,vertical=false,boxes=[],bbox={x:0,y:0,w:0,h:0};
   let start=performance.now(), drawn=SEQ.map(()=>0), air=SEQ.map(()=>0), done=false, lilyT=-1;
-  let px=-1,py=-1,inside=false,pmx=0,pmy=0,tmx=0,tmy=0,raf=0,visible=true,pulse=null,lastPulse=0;
+  let px=-1,py=-1,inside=false,pmx=0,pmy=0,tmx=0,tmy=0,raf=0,visible=true,pulse=null,lastPulse=0,ripples=[],lastDrop=0,lilyDrop=null;
+  const SPEED=.48, LIFE=2600;
   const noise=document.createElement("canvas"); noise.width=noise.height=128; { const n=noise.getContext("2d"), d=n.createImageData(128,128); for(let i=0;i<d.data.length;i+=4){ d.data[i]=d.data[i+1]=d.data[i+2]=255; d.data[i+3]=Math.random()<.5?Math.random()*255:0; } n.putImageData(d,0,0); }
   const R0=rng(42); const fog=[...Array(5)].map(()=>({x:R0(),y:R0(),r:.25+R0()*.3,s:.3+R0()*.6,ph:R0()*6}));
   const dust=[...Array(120)].map(()=>({x:R0(),y:R0(),z:R0()}));
@@ -724,9 +762,9 @@ tick(); setInterval(tick,15000);
   function layout(){
     DPR=Math.min(2,devicePixelRatio||1); W=hero.clientWidth; H=hero.clientHeight;
     for(const c of [echo,shadow,cv,glyph,mk,lilyC]){ c.width=Math.round(W*DPR); c.height=Math.round(H*DPR); }
-    bg.width=Math.round(W); bg.height=Math.round(H);
+    bg.width=Math.round(W*DPR); bg.height=Math.round(H*DPR);
     vertical=W/H<.85;
-    if(vertical){ G=Math.min(W*.46,(H-340)/2.6); const top=Math.max(80,(H-310-G*2.6)/2+70); boxes=[0,1,2].map(i=>({x:(W-G)/2-W*.06,y:top+i*G*.86})); }
+    if(vertical){ G=Math.min(W*.46,(H-340)/2.6); const top=Math.max(80,(H-310-G*2.6)/2+70); boxes=[0,1,2].map(i=>({x:(W-G)/2-W*.12,y:top+i*G*.86})); }
     else { G=Math.min(W*.235,H*.42); const tw=G*2.82, left=(W-tw)/2-W*.06, top=H*.47-G*.5; boxes=[0,1,2].map(i=>({x:left+i*G*.91,y:top})); }
     bbox={x:boxes[0].x,y:boxes[0].y,w:vertical?G:G*2.82,h:vertical?G*2.72:G};
     redrawGlyph(); redrawMarks();
@@ -763,7 +801,7 @@ tick(); setInterval(tick,15000);
     if(f>=1){ mx.fillStyle="rgba(0,0,0,.35)"; mx.fillRect(p1[0]-1,p1[1]-1,2,2); }
     mx.restore(); return q(f);
   }
-  function texture(){ gx.save(); gx.setTransform(1,0,0,1,0,0); gx.globalCompositeOperation="source-atop"; gx.globalAlpha=.16; gx.fillStyle=gx.createPattern(noise,"repeat"); gx.fillRect(0,0,glyph.width,glyph.height); gx.restore(); }
+  function texture(){ gx.save(); gx.setTransform(1,0,0,1,0,0); gx.globalCompositeOperation="source-atop"; gx.globalAlpha=.22; gx.fillStyle=gx.createPattern(noise,"repeat"); gx.fillRect(0,0,glyph.width,glyph.height); gx.globalAlpha=1; gx.globalCompositeOperation="destination-out"; const r=rng(5); for(let i=0;i<900;i++){ const s=(.6+r()*1.6)*DPR; gx.fillRect(r()*glyph.width,r()*glyph.height,s,s); } gx.restore(); }
   function redrawGlyph(){ gx.setTransform(1,0,0,1,0,0); gx.clearRect(0,0,glyph.width,glyph.height); SEQ.forEach((s,k)=>{ if(drawn[k]>0) paintStroke(k,drawn[k]); }); if(done) texture(); syncLayers(); }
   function redrawMarks(){ mx.setTransform(1,0,0,1,0,0); mx.clearRect(0,0,mk.width,mk.height); SEQ.forEach((s,k)=>{ if(air[k]>0) drawAir(k,air[k]); }); }
   function syncLayers(){ for(const [c,x] of [[shadow,sx],[echo,ex]]){ x.setTransform(1,0,0,1,0,0); x.clearRect(0,0,c.width,c.height); x.drawImage(glyph,0,0); } }
@@ -772,16 +810,62 @@ tick(); setInterval(tick,15000);
     lx.setTransform(1,0,0,1,0,0); lx.clearRect(0,0,lilyC.width,lilyC.height); if(lilyT<0) return;
     lx.setTransform(DPR,0,0,DPR,0,0);
     const k=reduce?1:Math.min(1,(now-lilyT)/2200), sway=reduce?0:Math.sin(now*.0006)*.035+pmx*.04;
-    const base=vertical?[W*.88+pmx*-10,H*.36]:[W*.87+pmx*-18,H*.5+pmy*-8], S=vertical?H*.17:H*.36;
+    const base=vertical?[W*.86+pmx*-10,H*.33]:[W*.87+pmx*-18,H*.5+pmy*-8], S=vertical?Math.min(H*.13,W*.3):H*.36;
     const end=vertical?[W*.98,H*.98]:[W*.74,H*.96], ctl=[base[0]+S*.14,base[1]+(end[1]-base[1])*.6];
     // stem as a spine: vertebrae packed along the curve, assembling from the ground up, fading toward the floor
     const B=u=>[(1-u)*(1-u)*base[0]+2*(1-u)*u*ctl[0]+u*u*end[0],(1-u)*(1-u)*base[1]+2*(1-u)*u*ctl[1]+u*u*end[1]];
-    const pts=[]; { let u=.035, last=B(0); while(u<1){ const p=B(u), sz=S*(.1+u*.05); if(Math.hypot(p[0]-last[0],p[1]-last[1])>=sz*.62){ pts.push([u,p,sz]); last=p; } u+=.002; } }
+    const pts=[]; { let u=.035, last=B(0); while(u<1){ const p=B(u), sz=S*(vertical?(.15+u*.06):(.1+u*.05)); if(Math.hypot(p[0]-last[0],p[1]-last[1])>=sz*.62){ pts.push([u,p,sz]); last=p; } u+=.002; } }
     for(let i=pts.length-1;i>=0;i--){ const [u,p,sz]=pts[i], appear=Math.max(0,Math.min(1,(k*1.5-(1-u))*3)); if(!appear) continue;
       const tx=2*(1-u)*(ctl[0]-base[0])+2*u*(end[0]-ctl[0]), ty=2*(1-u)*(ctl[1]-base[1])+2*u*(end[1]-ctl[1]);
       const fade=u>.6?Math.max(0,1-(u-.6)/.4):1;
       vertebra(lx,p[0],p[1],Math.atan2(ty,tx)-Math.PI/2,sz*(.6+.4*appear),appear*.92*fade); }
-    const bloom=Math.max(0,Math.min(1,(k-.45)/.55)); if(bloom>0){ lx.globalAlpha=bloom; callaLily(lx,base[0],base[1],S*(.85+.15*ease(bloom)),-.18+sway,.96+.04*bloom); lx.globalAlpha=1; }
+    const bloom=Math.max(0,Math.min(1,(k-.45)/.55)), ang=-.18+sway, Sf=S*(.85+.15*ease(bloom));
+    const at=f=>[base[0]+f*Sf*Math.sin(ang), base[1]-f*Sf*Math.cos(ang)];
+    lilyDrop=bloom>.9?at(.78):null;
+    if(bloom>0) sigil(lx,...at(.6),S*.8,now,bloom);
+    if(bloom>0){ lx.globalAlpha=bloom; callaLily(lx,base[0],base[1],S*(.85+.15*ease(bloom)),-.18+sway,.96+.04*bloom); lx.globalAlpha=1; }
+  }
+
+  // a quiet sigil around the bloom: partial orbits, tick marks, a red dotted orbit with one moving point
+  function sigil(g,cx,cy,R,now,a){
+    const t=reduce?0:now*.00008;
+    g.save(); g.translate(cx,cy); g.globalAlpha=a*.9;
+    g.lineWidth=.8; g.strokeStyle="rgba(0,0,0,.38)";
+    g.beginPath(); g.arc(0,0,R*.66,t,t+Math.PI*1.1); g.stroke();
+    g.beginPath(); g.arc(0,0,R*.74,2-t*1.3,2-t*1.3+Math.PI*.7); g.stroke();
+    g.strokeStyle="rgba(0,0,0,.6)"; g.lineWidth=1.8;
+    for(let i=0;i<12;i++){ const q=3.5-t*.8+i*.07, r0=R*.84, r1=R*(.875+(i%4===0?.035:0)); g.beginPath(); g.moveTo(Math.cos(q)*r0,Math.sin(q)*r0); g.lineTo(Math.cos(q)*r1,Math.sin(q)*r1); g.stroke(); }
+    g.lineWidth=.8; g.strokeStyle="rgba(0,0,0,.65)";
+    [[t+Math.PI*1.1,R*.66],[2-t*1.3,R*.74]].forEach(([q,r])=>g.strokeRect(Math.cos(q)*r-3.5,Math.sin(q)*r-3.5,7,7));
+    g.rotate(-.32); g.setLineDash([1.3,5.5]); g.lineDashOffset=-now*.008; g.strokeStyle="rgba(225,37,27,.9)"; g.lineWidth=1.3;
+    g.beginPath(); g.ellipse(0,0,R*.86,R*.25,0,0,7); g.stroke(); g.setLineDash([]);
+    const p=reduce?.8:now*.00035; g.fillStyle="#e1251b"; g.beginPath(); g.arc(Math.cos(p)*R*.86,Math.sin(p)*R*.25,3.2,0,7); g.fill();
+    g.restore();
+  }
+  // ripples: rings on the paper; the name refracts as each ring passes through it
+  function liveRipples(now){
+    ripples=ripples.filter(r=>now-r.t<LIFE);
+    const out=[]; const cx=bbox.x+bbox.w/2, cy=bbox.y+bbox.h/2, half=Math.hypot(bbox.w,bbox.h)/2+G*.2;
+    for(const rp of ripples){ const age=now-rp.t, r=age*SPEED, band=46+age*.025, amp=G*.075*(1-age/LIFE), d=Math.hypot(cx-rp.x,cy-rp.y);
+      if(r+band>d-half && r-band<d+half) out.push({x:rp.x,y:rp.y,r,band,amp}); }
+    return out;
+  }
+  function drawRipples(now){
+    for(const rp of ripples){ const age=now-rp.t, a=1-age/LIFE; if(a<=0) continue; const r=age*SPEED;
+      const g=bx.createRadialGradient(rp.x,rp.y,Math.max(0,r-30),rp.x,rp.y,r+30); g.addColorStop(0,"rgba(0,0,0,0)"); g.addColorStop(.5,`rgba(0,0,0,${.075*a})`); g.addColorStop(1,"rgba(0,0,0,0)");
+      bx.fillStyle=g; bx.beginPath(); bx.arc(rp.x,rp.y,r+30,0,7); bx.fill();
+      bx.lineWidth=1; [[1,.3],[.9,.16],[.79,.09],[.66,.05]].forEach(([m,al])=>{ bx.strokeStyle=`rgba(0,0,0,${al*a})`; bx.beginPath(); bx.arc(rp.x,rp.y,r*m,0,7); bx.stroke(); });
+      bx.setLineDash([1.4,7]); bx.lineDashOffset=-age*.02; bx.strokeStyle=`rgba(225,37,27,${.85*a})`; bx.lineWidth=1.4; bx.beginPath(); bx.arc(rp.x,rp.y,r*1.05,0,7); bx.stroke(); bx.setLineDash([]); }
+  }
+  function refract(act){
+    ctx.drawImage(glyph,0,0);
+    const T=7, D=DPR, x0=Math.floor(bbox.x-G*.15), x1=Math.ceil(bbox.x+bbox.w+G*.15), y0=Math.floor(bbox.y-G*.15), y1=Math.ceil(bbox.y+bbox.h+G*.15);
+    for(let y=y0;y<y1;y+=T) for(let x=x0;x<x1;x+=T){
+      const cx=x+T/2, cy=y+T/2; let ox=0,oy=0;
+      for(const r of act){ const dx=cx-r.x, dy=cy-r.y, d=Math.hypot(dx,dy)||1, k=d-r.r; if(k>-r.band&&k<r.band){ const f=Math.sin(k/r.band*Math.PI)*r.amp*(1-Math.abs(k)/r.band); ox+=dx/d*f; oy+=dy/d*f; } }
+      if(Math.abs(ox)+Math.abs(oy)<.35) continue;
+      ctx.clearRect(x*D,y*D,T*D,T*D); ctx.drawImage(glyph,(x+ox)*D,(y+oy)*D,T*D,T*D,x*D,y*D,T*D,T*D);
+    }
   }
 
   function frame(now){
@@ -793,7 +877,7 @@ tick(); setInterval(tick,15000);
         if(f>drawn[k]){ const e=ease(f); paintStroke(k,e); drawn[k]=f; if(f<1){ const c=CH[s.ci]; tip=toScreen(s.ci,pointAt(c.med[s.si],c.len[s.si],e)); } }
       });
       syncLayers();
-      if(t>=WRITE_END){ done=true; drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); redrawGlyph(); hero.classList.add("done","lilyon"); lilyT=now; }
+      if(t>=WRITE_END){ done=true; drawn=SEQ.map(()=>1); air=SEQ.map(()=>1); redrawGlyph(); hero.classList.add("done","lilyon"); lilyT=now; ripples.push({x:bbox.x+bbox.w/2,y:bbox.y+bbox.h/2,t:now}); }
       else if(t>WRITE_END*.55 && lilyT<0){ lilyT=now; hero.classList.add("lilyon"); }
     }
     render(now,tip);
@@ -804,17 +888,21 @@ tick(); setInterval(tick,15000);
     shadow.style.transform=`translate(${-pmx*16}px,${-pmy*10+G*.08}px)`;
     echo.style.transform=`translate(${pmx*26}px,${pmy*18}px) scale(1.035)`;
     mk.style.transform=`translate(${pmx*8}px,${pmy*6}px)`;
-    bx.setTransform(1,0,0,1,0,0); bx.clearRect(0,0,W,H);
+    bx.setTransform(DPR,0,0,DPR,0,0); bx.clearRect(0,0,W,H);
     for(const f of fog){ const x=(f.x+Math.sin(now*.00005*f.s+f.ph)*.08)*W+pmx*-30*f.s, y=(f.y+Math.cos(now*.00004*f.s+f.ph)*.06)*H+pmy*-20*f.s, r=f.r*Math.max(W,H);
       const g=bx.createRadialGradient(x,y,0,x,y,r); g.addColorStop(0,"rgba(0,0,0,.028)"); g.addColorStop(1,"rgba(0,0,0,0)"); bx.fillStyle=g; bx.fillRect(0,0,W,H); }
     for(const d of dust){ const z=.3+d.z*1.2; let y=(d.y-now*.000008*z)%1; if(y<0) y+=1; bx.fillStyle=`rgba(0,0,0,${.1+d.z*.3})`; const s=.5+d.z*1.5; bx.fillRect(d.x*W+pmx*-14*z,y*H+pmy*-10*z,s,s); }
+    if(done&&!reduce&&lilyDrop&&now-lastDrop>7000){ ripples.push({x:lilyDrop[0],y:lilyDrop[1],t:now}); lastDrop=now; }
+    drawRipples(now);
     drawLily(now);
 
     ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,cv.width,cv.height);
+    const act=reduce?[]:liveRipples(now);
     let gy=-1,gR=0;
     if(done&&inside&&px>bbox.x-40&&px<bbox.x+bbox.w+40&&py>bbox.y-40&&py<bbox.y+bbox.h+40){ gy=py; gR=G*.28; }
     else if(done&&!reduce){ if(!pulse&&now-lastPulse>4200){ pulse={y:bbox.y+Math.random()*bbox.h,t:now}; lastPulse=now; } if(pulse){ const a=(now-pulse.t)/420; if(a>1) pulse=null; else { gy=pulse.y; gR=G*.18*Math.sin(a*Math.PI); } } }
-    if(gy>=0&&gR>1){
+    if(act.length){ refract(act); }
+    else if(gy>=0&&gR>1){
       const q=Math.floor(now/70), top=Math.floor(bbox.y-G*.2), bot=Math.ceil(bbox.y+bbox.h+G*.2); let y=top, band=0;
       ctx.drawImage(glyph,0,0,cv.width,top*DPR,0,0,cv.width,top*DPR);
       while(y<bot){ const r=rng(band*131+q*7), h=3+Math.floor(r()*10), d=Math.abs(y-gy); let off=0, hot=false;
@@ -833,6 +921,7 @@ tick(); setInterval(tick,15000);
 
   hero.addEventListener("pointermove",e=>{ const b=hero.getBoundingClientRect(); px=e.clientX-b.left; py=e.clientY-b.top; inside=true; tmx=(px/W-.5)*2; tmy=(py/H-.5)*2; });
   hero.addEventListener("pointerleave",()=>{ inside=false; tmx=tmy=0; });
+  hero.addEventListener("pointerdown",e=>{ if(e.target.closest("a,button")||reduce) return; const b=hero.getBoundingClientRect(); ripples.push({x:e.clientX-b.left,y:e.clientY-b.top,t:performance.now()}); if(ripples.length>6) ripples.shift(); lastDrop=performance.now(); });
   $("#replay").addEventListener("click",replay);
   let rT=0; addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ layout(); if(reduce) render(performance.now(),null); },120); });
   const ready=()=>{ layout(); if(reduce){ finish(); } else { start=performance.now(); raf=requestAnimationFrame(loop);
