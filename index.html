@@ -77,8 +77,10 @@ button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
 
 
 /* ---------- depth: ink-wash mist, giant cropped glyphs, the seal ---------- */
+.hero .lantern{position:absolute;inset:0;z-index:0;pointer-events:none;background:url(assets/hero/lantern-ink.webp) 46% 58%/auto 118% no-repeat;opacity:0;transform:scale(1.04);transition:opacity 2.6s ease .8s,transform 6s cubic-bezier(.2,.7,.2,1) .8s}
+.hero.scan .lantern{opacity:.26;transform:none}
 .hero .mist{position:absolute;left:0;right:0;bottom:0;height:46%;z-index:0;pointer-events:none;overflow:hidden;opacity:0;transition:opacity 3.4s ease .3s}
-.hero.scan .mist{opacity:.38}
+.hero.scan .mist{opacity:.2}
 .art{mix-blend-mode:multiply}
 .hero .mist canvas{inset:auto;left:-15%;bottom:0;width:130%;max-width:none;height:100%;will-change:transform}
 section.block{isolation:isolate}
@@ -265,7 +267,7 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .try:active{transform:translate(1px,1px)}
 @keyframes shake{0%,100%{translate:0 0}20%{translate:-5px 1px}40%{translate:4px -1px}60%{translate:-3px 0}80%{translate:2px 1px}}
 .dlg.shake{animation:shake .32s steps(5,jump-end)}
-.tryagain{display:block;width:calc(100% + var(--gut));max-width:none;height:auto;margin-top:clamp(40px,6vw,90px);pointer-events:none}
+.tryagain{display:block;width:100%;max-width:none;height:auto;margin-top:clamp(48px,6vw,96px);pointer-events:none}
 
 /* process */
 .steps{list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(16px,2vw,28px);max-width:1440px}
@@ -413,6 +415,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
 <main id="top">
   <section class="hero" id="hero" aria-label="Caroline Chen, designer">
     <h1 class="skip" style="left:-999px">Caroline Chen, designer</h1>
+    <div class="lantern" aria-hidden="true"></div>
     <div class="mist" id="mist" aria-hidden="true"></div>
     <canvas id="bg" aria-hidden="true"></canvas>
     <div class="art" id="art" aria-hidden="true">
@@ -771,11 +774,19 @@ let glitchKick=()=>{};
   const cv=$("#tryagain"), sec=$("#failsafe"); let base=null, W=0, H=0, D=1, vis=false, t0=0, kick=0, raf=0, nextG=0, bands=[];
   function build(){
     D=Math.min(2,devicePixelRatio||1); const cw=cv.clientWidth; if(!cw) return;
-    const m=document.createElement("canvas").getContext("2d"); m.font=`100px "IM Fell English"`; const tw100=m.measureText("TRY AGAIN").width||600;
-    const fs=Math.min(cw*.9/tw100*100, innerHeight*.32); W=Math.round(cw*D); H=Math.round(fs*.86*D); cv.width=W; cv.height=H;
+    const m=document.createElement("canvas").getContext("2d"); m.font=`100px "IM Fell English"`; const tw100=(m.measureText("TRY AGAIN").width||600)+78+22;
+    const fs=Math.min(cw*.5/tw100*100, innerHeight*.2), tri=fs*.78, gap=fs*.22; W=Math.round(cw*D); H=Math.round(fs*1.12*D); cv.width=W; cv.height=H;
     const t=document.createElement("canvas"); t.width=W; t.height=H; const tg=t.getContext("2d");
-    tg.fillStyle="#fff"; tg.fillRect(0,0,W,H); tg.fillStyle="#000"; tg.font=`${fs*D}px "IM Fell English"`; tg.textBaseline="alphabetic";
-    tg.fillText("TRY AGAIN",0,H*.86);
+    tg.fillStyle="#fff"; tg.fillRect(0,0,W,H); tg.fillStyle="#000";
+    /* pixel warning triangle, same bitmap as the dialogs */
+    const px=tri*D/13, ox=2*D, oy=(H*.74)-tri*D*12/13;
+    const R=[7,8,8,9,9,10,10,11,11,12,12,13];
+    for(let y=0;y<12;y++){ tg.fillRect(ox+(13-R[y])*px, oy+y*px, (2*R[y]-13)*px, px+.5); }
+    tg.fillStyle="#fff"; tg.fillRect(ox+6*px,oy+4*px,px,4*px); tg.fillRect(ox+6*px,oy+9*px,px,px);
+    tg.fillStyle="#000"; tg.font=`${fs*D}px "IM Fell English"`; tg.textBaseline="alphabetic";
+    const tx=ox+tri*D+gap*D; tg.fillText("TRY AGAIN",tx,H*.74);
+    const cw2=tg.measureText("TRY AGAIN").width, cu=fs*.5*D/13, cx=tx+cw2+fs*.1*D, cy=H*.42;
+    tg.beginPath(); [[0,0],[0,11],[3,8],[5,13],[7,12],[5,7],[9,7]].forEach(([x,y],i)=>{ const X=cx+x*cu,Y=cy+y*cu; i?tg.lineTo(X,Y):tg.moveTo(X,Y); }); tg.closePath(); tg.fill();
     // fade toward the bottom
     const gr=tg.createLinearGradient(0,0,0,H); gr.addColorStop(0,"rgba(255,255,255,0)"); gr.addColorStop(.3,"rgba(255,255,255,0)"); gr.addColorStop(1,"rgba(255,255,255,.88)");
     tg.fillStyle=gr; tg.fillRect(0,0,W,H);
@@ -808,7 +819,7 @@ let glitchKick=()=>{};
 
 /* ===================== FIELD NOTES ===================== */
 const FR=[[-2.6,10,-14,1],[1.9,-6,10,1.22],[-1.3,18,-4,.92],[2.8,0,16,1.12],[-2,14,-12,.96],[1.5,-4,8,1.18]];
-$("#field").innerHTML=FIELD.map(([f,c],i)=>{ const [r,y,px,g]=FR[i%FR.length]; return `<figure style="--r:${r}deg;--y:${y}px;--px:${px}px;flex-grow:${g}">${texHTML(`assets/china/thumbs/${f}.jpg`,c,"wj sm")}<figcaption>${c}</figcaption></figure>`; }).join("");
+$("#field").innerHTML=FIELD.map(([f,c],i)=>{ const [r,y,px,g]=FR[i%FR.length]; return `<figure style="--r:${r}deg;--y:${y}px;--px:${px}px;flex-grow:${g}">${texHTML(`assets/china/thumbs/${f}.jpg`,c,"wj sm")}</figure>`; }).join("");
 
 /* texture all images lazily, bind engagement */
 (function(){
