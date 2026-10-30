@@ -216,11 +216,11 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 /* contact */
 .contact{padding-bottom:28px;overflow:hidden}
 /* hanging lucky knot: sways from its loop, tassel lags behind */
-.hang{position:absolute;right:calc(var(--gut) + 3vw);top:calc(clamp(96px,12vw,170px) - 70px);width:clamp(150px,17vw,250px);aspect-ratio:540/900;color:var(--accent);transform-origin:50% 4%;clip-path:inset(0 0 100% 0);transition:clip-path 1.8s var(--ease);pointer-events:none}
+.hang{position:absolute;right:calc(var(--gut) + 3vw);top:calc(clamp(96px,12vw,170px) - 70px);width:clamp(130px,14vw,210px);aspect-ratio:160/250;color:var(--accent);transform-origin:50% 4%;clip-path:inset(0 0 100% 0);transition:clip-path 1.8s var(--ease);pointer-events:none}
 .hang.in{clip-path:inset(-5% -20% -5% -20%);animation:sway 7s ease-in-out 1.8s infinite}
 .hang span{position:absolute;inset:0;background:currentColor;-webkit-mask:var(--m) center/100% 100% no-repeat;mask:var(--m) center/100% 100% no-repeat}
 .hang .k-top{--m:url(assets/sym/knot-top.webp)}
-.hang .k-tails{--m:url(assets/sym/knot-tails.webp);transform-origin:50% 40%;animation:sway 7s ease-in-out 2.3s infinite}
+.hang .k-tails{--m:url(assets/sym/knot-tails.webp);transform-origin:50% 74.7%;animation:sway 7s ease-in-out 2.3s infinite}
 @keyframes sway{0%,100%{transform:rotate(-2.2deg)}50%{transform:rotate(2.2deg)}}
 .head .sym{width:.8em;height:.8em;margin-right:.35em;vertical-align:-.04em;color:var(--accent)}
 .mail{display:block;font-family:var(--disp);font-size:clamp(22px,5vw,80px);letter-spacing:-.05em;line-height:1.1;text-decoration:none;word-break:break-word;max-width:1440px;transition:color .25s}
@@ -714,7 +714,7 @@ tick(); setInterval(tick,15000);
     if(vertical){ G=Math.min(W*.46,(H-340)/2.6); const top=Math.max(80,(H-310-G*2.6)/2+70); boxes=[0,1,2].map(i=>({x:W*.1,y:top+i*G*.86})); }
     else { G=Math.min(W*.185,H*.38); const tw=G*2.82, left=W*.075, top=H*.47-G*.5; boxes=[0,1,2].map(i=>({x:left+i*G*.91,y:top})); }
     bbox={x:boxes[0].x,y:boxes[0].y,w:vertical?G:G*2.82,h:vertical?G*2.72:G};
-    redrawGlyph(); redrawMarks();
+    buildTex(); redrawGlyph(); redrawMarks();
   }
   const sc=()=>G/1024;
   function charT(g,ci){ const b=boxes[ci],s=sc(); g.setTransform(s*DPR,0,0,-s*DPR,b.x*DPR,(b.y+900*s)*DPR); }
@@ -748,10 +748,13 @@ tick(); setInterval(tick,15000);
     if(f>=1){ mx.fillStyle="#8f1c16"; mx.fillRect(p1[0]-1,p1[1]-1,2,2); }
     mx.restore(); return q(f);
   }
-  function texture(){ gx.save(); gx.setTransform(1,0,0,1,0,0); gx.globalCompositeOperation="source-atop"; gx.globalAlpha=.22; gx.fillStyle=gx.createPattern(noise,"repeat"); gx.fillRect(0,0,glyph.width,glyph.height); gx.globalAlpha=1; gx.globalCompositeOperation="destination-out"; const r=rng(5); for(let i=0;i<900;i++){ const s=(.6+r()*1.6)*DPR; gx.fillRect(r()*glyph.width,r()*glyph.height,s,s); } gx.restore(); }
+  function texture(){}
   function redrawGlyph(){ gx.setTransform(1,0,0,1,0,0); gx.clearRect(0,0,glyph.width,glyph.height); SEQ.forEach((s,k)=>{ if(drawn[k]>0) paintStroke(k,drawn[k]); }); if(done) texture(); syncLayers(); }
   function redrawMarks(){ mx.setTransform(1,0,0,1,0,0); mx.clearRect(0,0,mk.width,mk.height); SEQ.forEach((s,k)=>{ if(air[k]>0) drawAir(k,air[k]); }); }
-  function syncLayers(){}
+  const TEX=[0,1,2].map(i=>{ const im=new Image(); im.src=`assets/sym/name-${i}.webp`; return im; });
+  const texC=document.createElement("canvas"), tx=texC.getContext("2d"), inkd=document.createElement("canvas"), ix=inkd.getContext("2d");
+  function buildTex(){ texC.width=inkd.width=glyph.width; texC.height=inkd.height=glyph.height; tx.setTransform(DPR,0,0,DPR,0,0); tx.clearRect(0,0,W,H); TEX.forEach((im,i)=>{ if(im.complete&&im.naturalWidth) tx.drawImage(im,boxes[i].x,boxes[i].y,G,G); }); }
+  function syncLayers(){ ix.setTransform(1,0,0,1,0,0); ix.globalCompositeOperation="source-over"; ix.clearRect(0,0,inkd.width,inkd.height); ix.drawImage(texC,0,0); ix.globalCompositeOperation="destination-in"; ix.drawImage(glyph,0,0); ix.globalCompositeOperation="source-over"; }
 
   // ripples: rings on the paper; the name refracts as each ring passes through it
   function liveRipples(now){
@@ -769,13 +772,13 @@ tick(); setInterval(tick,15000);
       bx.setLineDash([1.4,7]); bx.lineDashOffset=-age*.02; bx.strokeStyle=`rgba(143,28,22,${.85*a})`; bx.lineWidth=1.4; bx.beginPath(); bx.arc(rp.x,rp.y,r*1.05,0,7); bx.stroke(); bx.setLineDash([]); }
   }
   function refract(act){
-    ctx.drawImage(glyph,0,0);
+    ctx.drawImage(inkd,0,0);
     const T=7, D=DPR, x0=Math.floor(bbox.x-G*.15), x1=Math.ceil(bbox.x+bbox.w+G*.15), y0=Math.floor(bbox.y-G*.15), y1=Math.ceil(bbox.y+bbox.h+G*.15);
     for(let y=y0;y<y1;y+=T) for(let x=x0;x<x1;x+=T){
       const cx=x+T/2, cy=y+T/2; let ox=0,oy=0;
       for(const r of act){ const dx=cx-r.x, dy=cy-r.y, d=Math.hypot(dx,dy)||1, k=d-r.r; if(k>-r.band&&k<r.band){ const f=Math.sin(k/r.band*Math.PI)*r.amp*(1-Math.abs(k)/r.band); ox+=dx/d*f; oy+=dy/d*f; } }
       if(Math.abs(ox)+Math.abs(oy)<.35) continue;
-      ctx.clearRect(x*D,y*D,T*D,T*D); ctx.drawImage(glyph,(x+ox)*D,(y+oy)*D,T*D,T*D,x*D,y*D,T*D,T*D);
+      ctx.clearRect(x*D,y*D,T*D,T*D); ctx.drawImage(inkd,(x+ox)*D,(y+oy)*D,T*D,T*D,x*D,y*D,T*D,T*D);
     }
   }
 
@@ -814,14 +817,14 @@ tick(); setInterval(tick,15000);
     if(act.length){ refract(act); }
     else if(gy>=0&&gR>1){
       const q=Math.floor(now/70), top=Math.floor(bbox.y-G*.2), bot=Math.ceil(bbox.y+bbox.h+G*.2); let y=top, band=0;
-      ctx.drawImage(glyph,0,0,cv.width,top*DPR,0,0,cv.width,top*DPR);
+      ctx.drawImage(inkd,0,0,cv.width,top*DPR,0,0,cv.width,top*DPR);
       while(y<bot){ const r=rng(band*131+q*7), h=3+Math.floor(r()*10), d=Math.abs(y-gy); let off=0, hot=false;
         if(d<gR){ const k=1-d/gR; off=(r()-.5)*2*k*G*.14; if(r()<.25) off*=3; hot=r()<.09*k; }
-        ctx.drawImage(glyph,0,y*DPR,cv.width,h*DPR,off*DPR,y*DPR,cv.width,h*DPR);
+        ctx.drawImage(inkd,0,y*DPR,cv.width,h*DPR,off*DPR,y*DPR,cv.width,h*DPR);
         if(hot){ ctx.save(); ctx.globalCompositeOperation="source-atop"; ctx.fillStyle="#8f1c16"; ctx.fillRect(0,y*DPR,cv.width,h*DPR); ctx.restore(); }
         y+=h; band++; }
-      ctx.drawImage(glyph,0,bot*DPR,cv.width,cv.height-bot*DPR,0,bot*DPR,cv.width,cv.height-bot*DPR);
-    } else ctx.drawImage(glyph,0,0);
+      ctx.drawImage(inkd,0,bot*DPR,cv.width,cv.height-bot*DPR,0,bot*DPR,cv.width,cv.height-bot*DPR);
+    } else ctx.drawImage(inkd,0,0);
     if(tip){ ctx.setTransform(DPR,0,0,DPR,0,0); const gl=ctx.createRadialGradient(tip[0],tip[1],0,tip[0],tip[1],12); gl.addColorStop(0,"rgba(143,28,22,.35)"); gl.addColorStop(1,"rgba(143,28,22,0)"); ctx.fillStyle=gl; ctx.fillRect(tip[0]-12,tip[1]-12,24,24); ctx.fillStyle="#8f1c16"; ctx.beginPath(); ctx.arc(tip[0],tip[1],3,0,7); ctx.fill(); }
   }
 
@@ -836,7 +839,7 @@ tick(); setInterval(tick,15000);
   let rT=0; addEventListener("resize",()=>{ clearTimeout(rT); rT=setTimeout(()=>{ layout(); if(reduce) render(performance.now(),null); },120); });
   const ready=()=>{ layout(); if(reduce){ finish(); } else { start=performance.now(); raf=requestAnimationFrame(loop);
     new IntersectionObserver(([en])=>{ visible=en.isIntersecting; if(visible){ cancelAnimationFrame(raf); raf=requestAnimationFrame(loop);} }).observe(hero); } };
-  (document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve()).then(ready);
+  Promise.all([document.fonts&&document.fonts.ready?document.fonts.ready:Promise.resolve(),...TEX.map(im=>im.decode().catch(()=>{}))]).then(ready);
 })();
 
 /* nav + spine: mark current section */
