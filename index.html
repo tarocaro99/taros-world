@@ -317,7 +317,7 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .gwall{column-count:3;column-gap:clamp(16px,2.4vw,36px);max-width:1440px}
 .gifts{position:relative;isolation:isolate}
 .gback{position:absolute;left:-16vw;top:6%;width:min(980px,78vw);aspect-ratio:1400/1050;background:url(assets/hero/lantern-ink.webp) center/contain no-repeat;opacity:.16;transform:translate3d(0,var(--gp,0px),0) scaleX(-1);z-index:-1;pointer-events:none}
-.gline{font-family:var(--disp);font-style:italic;font-size:clamp(19px,1.9vw,27px);line-height:1.3;letter-spacing:-.01em;max-width:36ch;margin:-8px 0 10px calc(clamp(40px,6.6vw,108px)*1.4)}
+.gline{font-family:var(--disp);font-style:italic;font-size:clamp(19px,1.9vw,27px);line-height:1.3;letter-spacing:-.01em;max-width:36ch;margin:-8px 0 clamp(44px,6vw,84px) calc(clamp(40px,6.6vw,108px)*1.4)}
 .gline .uln{font-style:italic}
 .gsub{max-width:46ch;color:var(--mute);font-size:clamp(14px,1.1vw,16px);line-height:1.65;margin:0 0 clamp(44px,6vw,84px) calc(clamp(40px,6.6vw,108px)*1.4)}
 .gifts.seen .uln::after{clip-path:inset(0 0 0 0)}
@@ -493,8 +493,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   <section class="block gifts" id="gifts" aria-labelledby="gifts-h">
     <div class="gback" aria-hidden="true"></div>
     <div class="head"><h2 id="gifts-h"><span class="ico sym ico-coin" aria-hidden="true"></span>Gifts</h2></div>
-    <p class="gline">Gift cards were too easy, so my parents <span class="uln">got paintings.</span></p>
-    <p class="gsub">Birthdays, Mother’s Day, Father’s Day, Christmas: whatever the occasion, they got a watercolor.<svg class="seal static gseal" viewBox="0 0 100 100" aria-hidden="true"><use href="#sealg" filter="url(#stampfx)"/></svg></p>
+    <p class="gline">Watercolors I painted for my parents, for birthdays and holidays.<svg class="seal static gseal" viewBox="0 0 100 100" aria-hidden="true"><use href="#sealg" filter="url(#stampfx)"/></svg></p>
     <div class="gwall" id="gwall"></div>
   </section>
 
