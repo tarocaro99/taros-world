@@ -623,10 +623,10 @@ const PROJECTS = [
     blurb:"The internet runs on ideas we’ve stopped questioning. These essays turn passing scroll thoughts into something worth a second look.",
     thumb:"assets/thumbs/blog_thumb.jpg", url:"https://des117.space/fa2025-mead/cache/blog/index.html", cta:"Read the blog",
     tags:["Web design","Writing"] },
-  { title:"Corky Lee Zine", year:"", kind:"Zine", medium:"Paper",
+  { title:"Corky Lee Zine", year:"", kind:"Zine", medium:"Paper", featured:true,
     sub:"A zine on Sinophobia and anti-Chinese sentiment in the West, built around Corky Lee’s photographs.",
-    blurb:"Photographs by Corky Lee.", thumb:"assets/thumbs/corky_lee_zine.jpg", url:"", tags:["Zine","Editorial","Print"] },
-  { title:"Clarendon Type Poster", year:"", kind:"Typography", medium:"Paper", featured:true,
+    blurb:"Built around the photographs of Corky Lee, the self-described unofficial Asian American photo laureate, and the long history of anti-Chinese sentiment they document. The layout lets the images do the arguing.", role:"Editorial layout, photo sequencing, print", thumb:"assets/thumbs/corky_lee_zine.jpg", url:"", tags:["Zine","Editorial","Print"] },
+  { title:"Clarendon Type Poster", year:"", kind:"Typography", medium:"Paper",
     sub:"A type specimen poster built around the Clarendon slab serif.",
     blurb:"Clarendon, drawn by Robert Besley in 1845, blown up until the R and P become shapes instead of letters. The full alphabet and numerals sit underneath as the specimen, with the name running up the edge.",
     role:"Typography, layout, print",
@@ -658,7 +658,7 @@ const PROJECTS = [
     thumb:"assets/thumbs/fail_safe_thumb.jpg", video:"assets/fail_safe.mp4", url:"", tags:["Loop timing","Pikimov"] },
 ];
 const LABORDER=["Absurd Optimism","Fail-Safe","For Summit"];
-const ORDER=["Infinite Regress","Exhale","The Mask Compliance Report","Clarendon Type Poster"];
+const ORDER=["Infinite Regress","Exhale","The Mask Compliance Report","Corky Lee Zine"];
 PROJECTS.sort((a,b)=>{ const x=ORDER.indexOf(a.title), y=ORDER.indexOf(b.title); return (x<0?99:x)-(y<0?99:y); });
 { const labs=PROJECTS.filter(p=>p.lab).sort((a,b)=>LABORDER.indexOf(a.title)-LABORDER.indexOf(b.title)); let k=0; PROJECTS.forEach((p,i)=>{ if(p.lab) PROJECTS[i]=labs[k++]; }); }
 const FIELD = [["lantern_street","Lantern street"],["river_night","River at night"],["lantern_trees","Lantern trees"],["green_lake","Green lake"],["edm_stage","Festival stage"],["cave_thumbsup","Cave, approved"]];
