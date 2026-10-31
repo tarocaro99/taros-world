@@ -577,7 +577,7 @@ const PROJECTS = [
     role:"Research, IA, wireframes, hi-fi prototype",
     thumb:"assets/thumbs/exhale_thumb.jpg", gallery:["assets/hero/exhale_home.jpg","assets/hero/exhale_stats.jpg"],
     url:"assets/exhale-case-study.html", cta:"Read the case study", tags:["UX research","Product design","Figma","React"] },
-  { title:"C-STEM Success Signage", year:"2025", kind:"Print & signage", medium:"Paper", featured:true,
+  { title:"C-STEM Success Signage", year:"2025", kind:"Print & signage", medium:"Paper",
     sub:"Event signage that turns district math-score gains into data graphics you can read from across a room.",
     blurb:"Made for the 6th Annual C-STEM Symposium at UC Davis. Two signs translate district-level results, Hacienda La Puente USD’s 344% jump in 6th-grade standard-exceeding scores and McPherson Magnet School’s 72% four-year SBAC math increase, into signage built to make the case for the program at a glance.",
     role:"Data visualization, layout, print production",
@@ -595,7 +595,7 @@ const PROJECTS = [
     role:"Fieldwork, brand critique, mascot design",
     thumb:"assets/thumbs/campus_identity_thumb.jpg", url:"assets/campus_identity.pdf", cta:"Open the PDF",
     tags:["UX research","Ethnography","Brand"] },
-  { title:"InterACE", year:"2024", kind:"UX case study", medium:"Screen", featured:true,
+  { title:"InterACE", year:"2024", kind:"UX case study", medium:"Screen",
     sub:"An AI interview-prep app: user research, brand identity and a high-fidelity prototype.",
     blurb:"Interview prep usually means rehearsing alone and hoping for the best. InterACE learns where you stumble and coaches you through it, so practice actually moves you somewhere.",
     role:"Research, brand identity, hi-fi prototype",
@@ -626,14 +626,15 @@ const PROJECTS = [
   { title:"Corky Lee Zine", year:"", kind:"Zine", medium:"Paper",
     sub:"A zine on Sinophobia and anti-Chinese sentiment in the West, built around Corky Lee’s photographs.",
     blurb:"Photographs by Corky Lee.", thumb:"assets/thumbs/corky_lee_zine.jpg", url:"", tags:["Zine","Editorial","Print"] },
-  { title:"Clarendon Type Poster", year:"", kind:"Typography", medium:"Paper",
+  { title:"Clarendon Type Poster", year:"", kind:"Typography", medium:"Paper", featured:true,
     sub:"A type specimen poster built around the Clarendon slab serif.",
     blurb:"Clarendon, drawn by Robert Besley in 1845, blown up until the R and P become shapes instead of letters. The full alphabet and numerals sit underneath as the specimen, with the name running up the edge.",
     role:"Typography, layout, print",
     thumb:"assets/thumbs/clarendon_poster.jpg", url:"", tags:["Typography","Poster"] },
-  { title:"The Mask Compliance Report", year:"2025", kind:"Photo essay", medium:"Art",
+  { title:"The Mask Compliance Report", year:"2025", kind:"Photo essay", medium:"Art", featured:true,
     sub:"A photo essay on productivity culture: photography, sequencing and layout.",
     blurb:"We’re told success means always looking productive, whatever it costs underneath. This photo essay pulls off that mask to show the fatigue we hide, and asks who the productive mindset really serves.",
+    role:"Photography, sequencing, layout",
     thumb:"assets/thumbs/maskcompliance_thumb.jpg",
     url:"https://www.figma.com/proto/08DGix9iJJL4pW8C42ITtI/AHI189-Photo-Essay-FINAL?page-id=0%3A1&node-id=23-13&p=f&viewport=516%2C104%2C1.01&t=gAZFrztQEjf6mzTh-1&scaling=min-zoom&content-scaling=fixed&starting-point-node-id=23%3A13",
     cta:"View the essay", tags:["Photography","Sequencing"] },
@@ -657,7 +658,7 @@ const PROJECTS = [
     thumb:"assets/thumbs/fail_safe_thumb.jpg", video:"assets/fail_safe.mp4", url:"", tags:["Loop timing","Pikimov"] },
 ];
 const LABORDER=["Absurd Optimism","Fail-Safe","For Summit"];
-const ORDER=["Infinite Regress","Exhale","InterACE","C-STEM Success Signage"];
+const ORDER=["Infinite Regress","Exhale","The Mask Compliance Report","Clarendon Type Poster"];
 PROJECTS.sort((a,b)=>{ const x=ORDER.indexOf(a.title), y=ORDER.indexOf(b.title); return (x<0?99:x)-(y<0?99:y); });
 { const labs=PROJECTS.filter(p=>p.lab).sort((a,b)=>LABORDER.indexOf(a.title)-LABORDER.indexOf(b.title)); let k=0; PROJECTS.forEach((p,i)=>{ if(p.lab) PROJECTS[i]=labs[k++]; }); }
 const FIELD = [["lantern_street","Lantern street"],["river_night","River at night"],["lantern_trees","Lantern trees"],["green_lake","Green lake"],["edm_stage","Festival stage"],["cave_thumbsup","Cave, approved"]];
