@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 460 640" fill="none" stroke-linecap="round" stroke-linejoin="round">
+<defs>
+<g id="lily" stroke="#2a2a30">
+  <path d="M0 0C-4-90 10-190 0-260" stroke-width="1.6"/>
+  <path d="M4-10C0-90 14-190 4-256" stroke-width=".7" opacity=".5"/>
+  <!-- outer funnel -->
+  <path d="M0-260C-8-292-54-322-62-380C-66-414-50-436-30-444C0-418 40-418 66-462C74-420 72-380 52-340C36-308 8-290 0-260Z" stroke-width="1.6"/>
+  <!-- rim edge and curled lip -->
+  <path d="M-30-444C-8-430 34-440 66-462" stroke-width="1.3"/>
+  <path d="M66-462C44-432 14-410 4-366C-2-338 4-296 0-260" stroke-width="1.2"/>
+  <path d="M-30-444C-34-410-22-370-8-336" stroke-width=".9" opacity=".7"/>
+  <path d="M-46-352C-36-330-20-300-6-276M40-396C34-364 24-330 12-300" stroke-width=".6" opacity=".55"/>
+  <!-- spadix -->
+  <path d="M10-330C14-362 16-392 18-424" stroke="#8f1c16" stroke-width="7"/>
+  <path d="M10-330C14-362 16-392 18-424" stroke="#fff" stroke-width="1.6" opacity=".55"/>
+</g>
+<g id="leaf" stroke="#2a2a30">
+  <path d="M0 0C-70-20-124-84-112-186C-60-140-14-76 0 0Z" stroke-width="1.5"/>
+  <path d="M0 0C-40-36-76-86-104-168" stroke-width=".9"/>
+  <path d="M-30-26C-50-28-68-34-82-46M-52-64C-68-62-82-64-94-74M-72-106C-82-102-94-102-104-108" stroke-width=".6" opacity=".6"/>
+</g>
+</defs>
+<use href="#leaf" transform="translate(196 636) rotate(10) scale(1.25)"/>
+<use href="#leaf" transform="translate(226 638) rotate(34) scale(.95) scale(-1 1)"/>
+<use href="#lily" transform="translate(212 638) rotate(-3)"/>
+<use href="#lily" transform="translate(112 640) rotate(-16) scale(.66)"/>
+<use href="#lily" transform="translate(336 640) rotate(14) scale(.52)"/>
+</svg>
