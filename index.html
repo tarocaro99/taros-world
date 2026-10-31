@@ -291,9 +291,9 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .about{display:grid;grid-template-columns:repeat(12,1fr);column-gap:clamp(16px,2vw,28px);max-width:1440px;align-items:start}
 .portrait{grid-column:1/span 4;position:sticky;top:90px;z-index:1}
 .about{position:relative}
-.abk{position:absolute;left:1%;bottom:2%;width:min(30%,400px);aspect-ratio:1000/1375;z-index:0;pointer-events:none}
-.abk::before{content:"";position:absolute;inset:0;background:url(assets/hero/lilies-ht.webp) center bottom/contain no-repeat;opacity:.9;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 80%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 80%,transparent 100%)}
-.abk i{position:absolute;display:block;left:calc(59.5% - 4.5%);top:28.5%;width:9%;aspect-ratio:120/260;background:url(assets/sym/tuanjin.svg) center top/contain no-repeat;transform-origin:50% 0;animation:kswing 5.2s ease-in-out infinite}
+.abk{position:absolute;left:3%;bottom:1%;width:min(26%,340px);aspect-ratio:800/1441;z-index:0;pointer-events:none}
+.abk::before{content:"";position:absolute;inset:0;background:url(assets/hero/lilies-ink.webp) center bottom/contain no-repeat;opacity:.95}
+.abk i{position:absolute;display:block;left:calc(21.5% - 6%);top:1.6%;width:12%;aspect-ratio:120/260;background:url(assets/sym/tuanjin.svg) center top/contain no-repeat;transform-origin:50% 0;animation:kswing 5.2s ease-in-out infinite}
 @keyframes kswing{0%,100%{rotate:-7deg}50%{rotate:7deg}}
 @media (prefers-reduced-motion:reduce){.abk i{animation:none}}
 @media (max-width:900px){.abk{display:none}}
