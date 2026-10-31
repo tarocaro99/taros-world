@@ -293,10 +293,7 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .about{position:relative}
 .abk{position:absolute;left:1%;bottom:2%;width:min(30%,400px);aspect-ratio:1000/1375;z-index:0;pointer-events:none}
 .abk::before{content:"";position:absolute;inset:0;background:url(assets/hero/lilies-ht.webp) center bottom/contain no-repeat;opacity:.9;-webkit-mask-image:linear-gradient(to bottom,#000 0,#000 80%,transparent 100%);mask-image:linear-gradient(to bottom,#000 0,#000 80%,transparent 100%)}
-.abk i{position:absolute;display:block;aspect-ratio:600/560;background:var(--accent);-webkit-mask:url(assets/sym/knot-body.webp) center/contain no-repeat;mask:url(assets/sym/knot-body.webp) center/contain no-repeat;transform-origin:50% 0;animation:kswing 5.2s ease-in-out infinite}
-.abk i:nth-child(1){left:calc(55.5% - 6.5%);top:16.1%;width:13%}
-.abk i:nth-child(2){left:calc(67% - 5%);top:37.5%;width:10%;animation-duration:4.4s;animation-delay:-1.6s}
-.abk i:nth-child(3){left:calc(23.4% - 4.5%);top:49.5%;width:9%;animation-duration:6s;animation-delay:-3s}
+.abk i{position:absolute;display:block;left:calc(57.6% - 5.5%);top:15.6%;width:11%;aspect-ratio:120/260;background:url(assets/sym/tuanjin.svg) center top/contain no-repeat;transform-origin:50% 0;animation:kswing 5.2s ease-in-out infinite}
 @keyframes kswing{0%,100%{rotate:-7deg}50%{rotate:7deg}}
 @media (prefers-reduced-motion:reduce){.abk i{animation:none}}
 @media (max-width:900px){.abk{display:none}}
@@ -522,7 +519,7 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   <section class="block" id="about" aria-labelledby="about-h">
     <div class="head"><h2 id="about-h">About</h2></div>
     <div class="about">
-      <div class="abk" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="abk" aria-hidden="true"><i></i></div>
       <figure class="portrait">
         <div class="gate"><div class="tex" data-tex><img src="assets/china/me_blue_dress.jpg" alt="Caroline crouching by a storefront at night, holding a clear umbrella" loading="lazy"><span class="scan"></span></div></div>
         
