@@ -351,6 +351,7 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .head .sym{width:.8em;height:.8em;margin-right:.35em;vertical-align:-.04em;color:var(--accent)}
 .mail{display:block;font-family:var(--disp);font-size:clamp(22px,5vw,80px);letter-spacing:-.01em;line-height:1.1;text-decoration:none;word-break:break-word;max-width:1440px;transition:color .25s}
 .mail:hover{color:var(--accent)}
+.mail.nm{cursor:default}.mail.nm:hover{color:inherit}
 .mails{display:flex;align-items:baseline;gap:.35em;flex-wrap:wrap;font-family:var(--disp);font-size:clamp(22px,5vw,80px);line-height:1.1}
 .mails .mail{font-size:inherit;display:inline-block}
 .mails .mslash{opacity:.3}
@@ -558,12 +559,10 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   <section class="block contact" id="contact" aria-labelledby="contact-h">
     <canvas class="hang" id="hang" aria-hidden="true"></canvas>
     <div class="head"><h2 id="contact-h">We can build something together.</h2></div>
-    <div class="mails">
-      <button class="mail" type="button" id="copy" aria-label="Copy my email address">Email</button>
-      <span class="mslash" aria-hidden="true">/</span>
-      <a class="mail" href="https://www.linkedin.com/in/caroline-che99/" target="_blank" rel="noopener">LinkedIn<span class="arr" aria-hidden="true">&#8599;</span></a>
-    </div>
+    <div class="mail nm">Caroline Chen</div>
     <div class="contact-row">
+      <button class="btn" type="button" id="copy" aria-label="Copy my email address">Email</button>
+      <a class="btn" href="https://www.linkedin.com/in/caroline-che99/" target="_blank" rel="noopener">LinkedIn &#8599;</a>
       <a class="btn" href="assets/Caroline_Chen_Resume.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
       <span class="copy-msg" id="copymsg" role="status" aria-live="polite"></span>
     </div>
