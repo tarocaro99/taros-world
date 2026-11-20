@@ -96,7 +96,7 @@ section.block{isolation:isolate}
 #contact .gl svg{fill:#111;--go:1;height:80%;top:3%;left:22vw}
 .contact{background:#fff}
 @supports (mix-blend-mode:difference){
-  .contact .head h2,.contact .mail,.contact-row{color:#fff;mix-blend-mode:difference}
+  .contact .head h2,.contact .mail,.contact .mails,.contact-row{color:#fff;mix-blend-mode:difference}
   .contact-row .btn{color:#fff}
   .contact .mail:hover{color:#fff;text-decoration:underline;text-underline-offset:.1em;text-decoration-thickness:2px}
 }
@@ -351,6 +351,11 @@ section.block{padding:clamp(96px,12vw,170px) var(--gut) 0;position:relative}
 .head .sym{width:.8em;height:.8em;margin-right:.35em;vertical-align:-.04em;color:var(--accent)}
 .mail{display:block;font-family:var(--disp);font-size:clamp(22px,5vw,80px);letter-spacing:-.01em;line-height:1.1;text-decoration:none;word-break:break-word;max-width:1440px;transition:color .25s}
 .mail:hover{color:var(--accent)}
+.mails{display:flex;align-items:baseline;gap:.35em;flex-wrap:wrap;font-family:var(--disp);font-size:clamp(22px,5vw,80px);line-height:1.1}
+.mails .mail{font-size:inherit;display:inline-block}
+.mails .mslash{opacity:.3}
+.mails .arr{font-size:.5em;margin-left:.15em;vertical-align:.45em}
+button.mail{background:none;border:0;padding:0;margin:0;color:inherit;font:inherit;letter-spacing:inherit;cursor:pointer;text-align:left}
 .contact-row{display:flex;gap:28px;flex-wrap:wrap;align-items:center;margin-top:32px}
 .copy-msg{color:var(--accent);font-size:14px;min-width:6ch}
 footer{position:relative;display:flex;justify-content:space-between;align-items:center;gap:16px;border-top:0;margin-top:clamp(80px,10vw,140px);padding-top:18px;font-size:14px;color:var(--mute)}
@@ -553,9 +558,12 @@ dialog.drawer[open]{animation:slide .5s var(--ease)}
   <section class="block contact" id="contact" aria-labelledby="contact-h">
     <canvas class="hang" id="hang" aria-hidden="true"></canvas>
     <div class="head"><h2 id="contact-h">We can build something together.</h2></div>
-    <a class="mail" href="mailto:carolineche99@gmail.com">carolineche99@gmail.com</a>
+    <div class="mails">
+      <button class="mail" type="button" id="copy" aria-label="Copy my email address">Email</button>
+      <span class="mslash" aria-hidden="true">/</span>
+      <a class="mail" href="https://www.linkedin.com/in/caroline-che99/" target="_blank" rel="noopener">LinkedIn<span class="arr" aria-hidden="true">&#8599;</span></a>
+    </div>
     <div class="contact-row">
-      <button class="btn" type="button" id="copy">Copy email</button>
       <a class="btn" href="assets/Caroline_Chen_Resume.pdf" target="_blank" rel="noopener">Résumé (PDF)</a>
       <span class="copy-msg" id="copymsg" role="status" aria-live="polite"></span>
     </div>
@@ -1113,8 +1121,9 @@ drawer.addEventListener("close",()=>dBody.querySelectorAll("video").forEach(v=>v
 /* ===================== CONTACT + CLOCKS ===================== */
 $("#copy").addEventListener("click",async()=>{
   const m=$("#copymsg");
-  try{ await navigator.clipboard.writeText("carolineche99@gmail.com"); m.textContent="Copied"; }
-  catch{ m.textContent="Select the address above to copy it"; }
+  const addr=["carolineche99","gmail.com"].join("@");
+  try{ await navigator.clipboard.writeText(addr); m.textContent="Email copied"; }
+  catch{ location.href="mailto:"+addr; }
   setTimeout(()=>m.textContent="",2200);
 });
 
